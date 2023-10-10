@@ -99,7 +99,7 @@ class _HomePageState extends State<HomePage> {
   final MyInAppReview _ratingService = MyInAppReview();
   @override
   void initState() {
-   // checkForUpdate();
+    // checkForUpdate();
     greetings();
     Timer(const Duration(seconds: 5), () {
       _ratingService.isSecondTimeOpen().then((value) {
@@ -108,7 +108,7 @@ class _HomePageState extends State<HomePage> {
         }
       });
     });
-    
+
     super.initState();
   }
 
@@ -155,34 +155,42 @@ class _HomePageState extends State<HomePage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Container(
-                          height: 50,
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                              color: defaultButton,
-                              borderRadius: BorderRadius.circular(12)),
-                          child: Text(
-                            'Agreed?',
-                            textAlign: TextAlign.center,
-                            style: GoogleFonts.poppins(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 14,
-                                color: Colors.white),
+                        GestureDetector(
+                          onTap: () {},
+                          child: Container(
+                            height: 50,
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                                color: defaultButton,
+                                borderRadius: BorderRadius.circular(12)),
+                            child: Text(
+                              'Agreed?',
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.poppins(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 14,
+                                  color: Colors.white),
+                            ),
                           ),
                         ),
-                        Container(
-                          height: 50,
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                              color: Colors.red,
-                              borderRadius: BorderRadius.circular(12)),
-                          child: Text(
-                            'Nop',
-                            textAlign: TextAlign.center,
-                            style: GoogleFonts.poppins(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 14,
-                                color: Colors.white),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: Container(
+                            height: 50,
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                                color: Colors.red,
+                                borderRadius: BorderRadius.circular(12)),
+                            child: Text(
+                              'Nop',
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.poppins(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 14,
+                                  color: Colors.white),
+                            ),
                           ),
                         ),
                       ],
@@ -263,9 +271,7 @@ class _HomePageState extends State<HomePage> {
                       style: TextStyle(color: defaultButton, fontSize: 25),
                     ),
                     TextButton(
-                        onPressed: () {
-                          
-                        }, child: const Text('Select Any'))
+                        onPressed: () {}, child: const Text('Select Any'))
                   ],
                 ),
               ),

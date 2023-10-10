@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../constants/constant.dart';
+import '../widgets/chat_list_item.dart';
+
 class MyChats extends StatefulWidget {
   const MyChats({super.key});
 
@@ -10,6 +13,13 @@ class MyChats extends StatefulWidget {
 class _MyChatsState extends State<MyChats> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    Size size = MediaQuery.of(context).size;
+    return Scaffold(
+      body: ListView.builder(
+          itemBuilder: (context, index) => Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ChatListItem(),
+              )),
+    );
   }
 }

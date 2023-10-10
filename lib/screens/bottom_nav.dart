@@ -23,12 +23,12 @@ class _BottomNavState extends State<BottomNav> {
     });
   }
 
-  List<Widget> _screen =  [
-  const  HomePage(),
-  const  SearchPage(),
-  const  MyChats(),
-  const  Charts(),
-  const  Profile()
+  List<Widget> _screen = [
+    const HomePage(),
+    const SearchPage(),
+    const MyChats(),
+    const Charts(),
+    const Profile()
   ];
 
   @override
@@ -52,7 +52,7 @@ class _BottomNavState extends State<BottomNav> {
             BottomNavigationBarItem(
                 icon: Icon(FontAwesomeIcons.message), label: 'Chats'),
             BottomNavigationBarItem(
-                icon: Icon(FontAwesomeIcons.chartBar), label: 'Chart'),
+                icon: Icon(FontAwesomeIcons.moneyCheck), label: 'Payment'),
             BottomNavigationBarItem(
                 icon: Icon(FontAwesomeIcons.userAstronaut), label: 'Profile'),
           ]),

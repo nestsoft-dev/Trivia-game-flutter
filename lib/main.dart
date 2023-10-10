@@ -14,7 +14,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Trival Max',
+      debugShowCheckedModeBanner: false,
+      title: 'Trivial Max',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
@@ -25,9 +26,11 @@ class MyApp extends StatelessWidget {
   }
 }
 /*
+echo "# droppoint" >> README.md
+to update code
 git init
-git add README.md
+git add .
 git commit -m "first commit"
 git branch -M main
-git remote add origin https://github.com/nestsoft-dev/Trivia-game-flutter.git
+
 git push -u origin main*/

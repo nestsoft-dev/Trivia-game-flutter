@@ -30,10 +30,13 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Container(
         height: size.height,
         width: size.width,
-        decoration: const BoxDecoration(
+        margin: const EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 10),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
             gradient: LinearGradient(
                 colors: [Colors.deepPurple, Colors.purple],
                 begin: Alignment.bottomRight)),
