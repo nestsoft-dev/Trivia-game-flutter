@@ -4,7 +4,7 @@ import 'package:trival_game/screens/home.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../constants/constant.dart';
-import 'chart.dart';
+import 'payment.dart';
 import 'profile.dart';
 import 'search.dart';
 
@@ -27,7 +27,7 @@ class _BottomNavState extends State<BottomNav> {
     const HomePage(),
     const SearchPage(),
     const MyChats(),
-    const Charts(),
+    const RedeemPoints(),
     const Profile()
   ];
 

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class Charts extends StatefulWidget {
-  const Charts({super.key});
+class RedeemPoints extends StatefulWidget {
+  const RedeemPoints({super.key});
 
   @override
-  State<Charts> createState() => _ChartsState();
+  State<RedeemPoints> createState() => _RedeemPointsState();
 }
 
-class _ChartsState extends State<Charts> {
+class _RedeemPointsState extends State<RedeemPoints> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
