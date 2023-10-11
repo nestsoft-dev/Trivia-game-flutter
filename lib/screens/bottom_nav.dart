@@ -52,7 +52,8 @@ class _BottomNavState extends State<BottomNav> {
             BottomNavigationBarItem(
                 icon: Icon(FontAwesomeIcons.message), label: 'Chats'),
             BottomNavigationBarItem(
-                icon: Icon(FontAwesomeIcons.moneyCheck), label: 'Payment'),
+                icon: Icon(FontAwesomeIcons.moneyCheckDollar),
+                label: 'Payment'),
             BottomNavigationBarItem(
                 icon: Icon(FontAwesomeIcons.userAstronaut), label: 'Profile'),
           ]),

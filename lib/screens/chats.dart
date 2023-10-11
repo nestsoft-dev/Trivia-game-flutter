@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../constants/constant.dart';
 import '../widgets/chat_list_item.dart';
+import 'message_screen.dart';
 
 class MyChats extends StatefulWidget {
   const MyChats({super.key});
@@ -17,8 +18,15 @@ class _MyChatsState extends State<MyChats> {
     return Scaffold(
       body: ListView.builder(
           itemBuilder: (context, index) => Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ChatListItem(),
+                padding: const EdgeInsets.only(bottom: 2),
+                child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => MessageScreen()));
+                    },
+                    child: ChatListItem()),
               )),
     );
   }

@@ -10,6 +10,13 @@ class Charts extends StatefulWidget {
 class _ChartsState extends State<Charts> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.white,
+        centerTitle: true,
+        title: Text('Redeem Points'),
+      ),
+    );
   }
 }

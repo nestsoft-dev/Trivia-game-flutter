@@ -89,10 +89,12 @@ class _LoginPageState extends State<LoginPage> {
                         setState(() {
                           _isAnimated = true;
                         });
-                        Navigator.push(
+
+                        Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => BottomNav()));
+                                builder: (context) => BottomNav()),
+                            (route) => false);
                       },
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 500),

@@ -14,6 +14,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../widgets/refer_card.dart';
 import '../widgets/withdrawal_card.dart';
+import 'single_quiz.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -99,7 +100,7 @@ class _HomePageState extends State<HomePage> {
   final MyInAppReview _ratingService = MyInAppReview();
   @override
   void initState() {
-    // checkForUpdate();
+    //checkForUpdate();
     greetings();
     Timer(const Duration(seconds: 5), () {
       _ratingService.isSecondTimeOpen().then((value) {
@@ -156,7 +157,13 @@ class _HomePageState extends State<HomePage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                         SingleQuizScreen(subject: 'english',)));
+                          },
                           child: Container(
                             height: 50,
                             padding: const EdgeInsets.all(10),

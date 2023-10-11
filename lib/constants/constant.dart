@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+final String API_KEY = 'ALOC-de08837978fd45c30861';
+
 final Color defaultButton = Colors.deepPurple;
 final Color lighBg = Color.fromARGB(143, 229, 213, 255);
 final Color lighBlue = Color.fromARGB(255, 1, 27, 255);

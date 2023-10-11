@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 import '../constants/constant.dart';
 
@@ -55,14 +56,43 @@ class _SearchPageState extends State<SearchPage> {
             child: Container(
               height: size.height,
               width: size.width,
+              padding: const EdgeInsets.all(3).copyWith(bottom: 10),
               decoration: BoxDecoration(
                   border: Border.all(width: 2, color: Colors.yellow),
                   color: Color.fromARGB(255, 162, 87, 248),
                   borderRadius: BorderRadius.circular(25)),
-              child: GridView.builder(
-                  gridDelegate:const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2),
-                  itemBuilder: (context, index) => Text(index.toString())),
+              child: Column(
+                children: [
+                  Text('Select from the Categories',
+                      style: TextStyle(color: Colors.white, fontSize: 25)),
+                  Expanded(
+                    child: GridView.builder(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisSpacing: 5,
+                                mainAxisSpacing: 5,
+                                crossAxisCount: 2),
+                        itemBuilder: (context, index) => Container(
+                              height: 150,
+                              //  padding: EdgeInsets.only(bott),
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(12)),
+                              child: Column(
+                                children: [
+                                  //avatar
+                                  CircleAvatar(
+                                    radius: 30,
+                                    child: Lottie.asset('assets/maths.json'),
+                                  ),
+
+                                  //subject name
+                                ],
+                              ),
+                            )),
+                  ),
+                ],
+              ),
             ),
           ),
         )
