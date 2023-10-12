@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "890136948273",
+    "project_id": "game-trivial",
+    "storage_bucket": "game-trivial.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:890136948273:android:f04e8871d39e33b8a36f10",
+        "android_client_info": {
+          "package_name": "com.netsoftdevelopers.trival_game"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCiqEo9gPF_0taWi6NuLyVIlbu-BsL9KKk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

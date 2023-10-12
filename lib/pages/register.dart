@@ -3,6 +3,8 @@ import 'package:trival_game/constants/constant.dart';
 import 'package:trival_game/widgets/textinput.dart';
 import 'package:auth_buttons/auth_buttons.dart';
 
+import '../firebase/firebase_functions.dart';
+
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
 
@@ -16,6 +18,7 @@ class _RegisterPageState extends State<RegisterPage> {
   TextEditingController _password = TextEditingController();
   bool _isPassword = true;
   bool _isAnimated = false;
+   FirebaseFun firebaseFun = FirebaseFun();
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -150,7 +153,9 @@ class _RegisterPageState extends State<RegisterPage> {
               style: const AuthButtonStyle(
                 iconType: AuthIconType.outlined,
               ),
-              onPressed: () {},
+              onPressed: () {
+                firebaseFun.signInWithGoogle(context);
+              },
             ),
           ],
         ),

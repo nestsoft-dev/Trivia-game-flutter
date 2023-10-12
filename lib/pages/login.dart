@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:auth_buttons/auth_buttons.dart';
 import '../constants/constant.dart';
+import '../firebase/firebase_functions.dart';
 import '../screens/bottom_nav.dart';
 import '../screens/home.dart';
 import '../widgets/textinput.dart';
@@ -17,6 +18,7 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController _password = TextEditingController();
   bool _isPassword = true;
   bool _isAnimated = false;
+  FirebaseFun firebaseFun = FirebaseFun();
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -148,11 +150,13 @@ class _LoginPageState extends State<LoginPage> {
                 )
               ],
             ),
-                GoogleAuthButton(
+            GoogleAuthButton(
               style: const AuthButtonStyle(
                 iconType: AuthIconType.outlined,
               ),
-              onPressed: () {},
+              onPressed: () {
+                firebaseFun.signInWithGoogle(context);
+              },
             ),
           ],
         ),

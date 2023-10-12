@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../screens/bottom_nav.dart';
 import 'onboarding_screen.dart';
 
 class SplashScreen extends StatelessWidget {
@@ -8,12 +10,20 @@ class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
     Future.delayed(Duration(milliseconds: 3000)).then((value) {
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => OnBoardingScreen()),
-          (route) => false);
+      if(firebaseAuth.currentUser!=null){
+Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => BottomNav()),
+            (route) => false);
+      }else{
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => OnBoardingScreen()),
+            (route) => false);
+      }
     });
     return Container(
       height: size.height,
