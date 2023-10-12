@@ -9,6 +9,7 @@ class ProfileSelect extends StatelessWidget {
   String des;
   IconData leadingIcon;
   IconData trialing;
+  Color backgroundColor;
   ProfileSelect({
     Key? key,
     this.onTap,
@@ -16,6 +17,7 @@ class ProfileSelect extends StatelessWidget {
     required this.des,
     required this.leadingIcon,
     required this.trialing,
+    required this.backgroundColor,
   }) : super(key: key);
 
   @override
@@ -25,11 +27,11 @@ class ProfileSelect extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         child: Container(
-          height: 90,
-          padding: EdgeInsets.all(8),
+          height: 75,
+          padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(35),
-            color: Color.fromARGB(235, 195, 160, 255),
+            color: backgroundColor,
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -39,7 +41,7 @@ class ProfileSelect extends StatelessWidget {
                 children: [
                   Icon(leadingIcon),
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(5.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -48,7 +50,7 @@ class ProfileSelect extends StatelessWidget {
                           title,
                           style: GoogleFonts.mochiyPopPOne(
                               fontWeight: FontWeight.w500,
-                              fontSize: 20,
+                              fontSize: 18,
                               color: Color.fromARGB(255, 35, 0, 82)),
                         ),
                         Text(

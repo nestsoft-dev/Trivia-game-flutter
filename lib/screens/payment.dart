@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../constants/constant.dart';
 
@@ -62,7 +63,15 @@ class _RedeemPointsState extends State<RedeemPoints> {
               color: Colors.black.withOpacity(0),
             ),
           ),
-          
+          Center(
+            child: Text(
+              'Google play giftCards\nAmazon Giftcard\nPaypal payments are coming Soon',
+              style: GoogleFonts.mochiyPopPOne(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 18,
+                  color: Color.fromARGB(255, 35, 0, 82)),
+            ),
+          )
         ],
       ),
     );

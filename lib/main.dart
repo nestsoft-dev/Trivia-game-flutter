@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'pages/splash.dart';
-import 'screens/home.dart';
-import 'screens/payment.dart';
-import 'screens/profile.dart';
-import 'screens/rewards_screen.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,8 +41,8 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      // home: const SplashScreen(),
-      home: const Profile(),
+      home: const SplashScreen(),
+      // home: const Profile(),
     );
   }
 }
