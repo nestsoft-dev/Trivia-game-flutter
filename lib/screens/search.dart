@@ -64,15 +64,21 @@ class _SearchPageState extends State<SearchPage> {
             ),
           ),
         ),
-        BackdropFilter(filter: ImageFilter.blur(sigmaX: 1.0, sigmaY: 1)),
-        Expanded(
+        BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+          child: Container(
+            color: Colors.black.withOpacity(0),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
           child: GridView.builder(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisSpacing: 5, mainAxisSpacing: 5, crossAxisCount: 2),
-              itemCount: 11,
+              itemCount: subjectNames.length,
               itemBuilder: (context, index) => Container(
                     height: 150,
-                    //  padding: EdgeInsets.only(bott),
+                    padding: EdgeInsets.all(5),
                     decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(12)),
@@ -84,22 +90,22 @@ class _SearchPageState extends State<SearchPage> {
                           child: Lottie.asset('assets/maths.json'),
                         ),
                         const SizedBox(
-                          height: 15,
+                          height: 10,
                         ),
                         Text(
-                          subjectNames[index].toUpperCase(),
+                          subjectNames[index],
                           textAlign: TextAlign.center,
                           style: GoogleFonts.mochiyPopPOne(
                               fontWeight: FontWeight.w500,
-                              fontSize: 25,
+                              fontSize: 23,
                               color: Color.fromARGB(255, 35, 0, 82)),
                         ),
 
                         const SizedBox(
-                          height: 15,
+                          height: 10,
                         ),
                         Container(
-                          padding: const EdgeInsets.all(10),
+                          padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(12),
                               color: Colors.yellowAccent.withOpacity(0.3)),
@@ -108,7 +114,7 @@ class _SearchPageState extends State<SearchPage> {
                             textAlign: TextAlign.center,
                             style: GoogleFonts.poppins(
                                 fontWeight: FontWeight.w500,
-                                fontSize: 18,
+                                fontSize: 17,
                                 color: Color.fromARGB(255, 35, 0, 82)),
                           ),
                         ),

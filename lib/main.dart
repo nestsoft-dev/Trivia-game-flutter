@@ -2,8 +2,15 @@ import 'package:flutter/material.dart';
 
 import 'pages/splash.dart';
 import 'screens/home.dart';
+import 'screens/payment.dart';
+import 'screens/profile.dart';
+import 'screens/rewards_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // await Firebase.initializeApp(
+  //   options: DefaultFirebaseOptions.currentPlatform,
+  // );
   runApp(const MyApp());
 }
 
@@ -18,11 +25,7 @@ class MyApp extends StatelessWidget {
               content: const Text(
                   'Your are about to exit Trivial Game, are you sure?'),
               actions: [
-                TextButton(
-                    onPressed: () {
-                      Navigator.pop(context, true);
-                    },
-                    child: const Text('Yes')),
+                TextButton(onPressed: () {}, child: const Text('Yes')),
                 TextButton(
                     onPressed: () {
                       Navigator.pop(context, false);
@@ -41,9 +44,8 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: WillPopScope(
-          onWillPop: existAppDialog(context), child: const SplashScreen()),
-      //home: const HomePage(),
+      // home: const SplashScreen(),
+      home: const Profile(),
     );
   }
 }
