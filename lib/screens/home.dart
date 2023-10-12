@@ -53,7 +53,7 @@ class _HomePageState extends State<HomePage> {
   List<String> subjects = [
     'Mathematics',
     'Science',
-    'Geography',
+    'Commercial',
     'Art',
   ];
   List<String> desc = [

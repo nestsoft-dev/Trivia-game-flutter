@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:auth_buttons/auth_buttons.dart';
 import '../constants/constant.dart';
 import '../screens/bottom_nav.dart';
 import '../screens/home.dart';
@@ -147,7 +147,13 @@ class _LoginPageState extends State<LoginPage> {
                   thickness: 1,
                 )
               ],
-            )
+            ),
+                GoogleAuthButton(
+              style: const AuthButtonStyle(
+                iconType: AuthIconType.outlined,
+              ),
+              onPressed: () {},
+            ),
           ],
         ),
       ),

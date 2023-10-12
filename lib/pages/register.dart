@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:trival_game/constants/constant.dart';
 import 'package:trival_game/widgets/textinput.dart';
+import 'package:auth_buttons/auth_buttons.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -141,9 +142,16 @@ class _RegisterPageState extends State<RegisterPage> {
                 Divider(
                   color: Colors.grey,
                   thickness: 1,
-                )
+                ),
+            
               ],
-            )
+            ),
+                GoogleAuthButton(
+              style: const AuthButtonStyle(
+                iconType: AuthIconType.outlined,
+              ),
+              onPressed: () {},
+            ),
           ],
         ),
       ),

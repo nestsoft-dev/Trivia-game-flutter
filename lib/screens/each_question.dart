@@ -13,20 +13,19 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../constants/constant.dart';
 import '../model/question_model.dart';
 import '../widgets/quiz_card.dart';
-import 'rewards_screen.dart';
 
-class SingleQuizScreen extends StatefulWidget {
+class EachQuestionScreen extends StatefulWidget {
   String subject;
-  SingleQuizScreen({
+  EachQuestionScreen({
     Key? key,
     required this.subject,
   }) : super(key: key);
 
   @override
-  State<SingleQuizScreen> createState() => _SingleQuizScreenState();
+  State<EachQuestionScreen> createState() => _EachQuestionScreenState();
 }
 
-class _SingleQuizScreenState extends State<SingleQuizScreen> {
+class _EachQuestionScreenState extends State<EachQuestionScreen> {
   final CardSwiperController controller = CardSwiperController();
   PageController _pageController = PageController(
     initialPage: 0,
@@ -171,19 +170,6 @@ class _SingleQuizScreenState extends State<SingleQuizScreen> {
         }
       } else if (time == 0) {
         double money = _score * 0.25;
-        //TODO show result
-        // _rewardedAd!.show(
-        //     onUserEarnedReward: (AdWithoutView ad, RewardItem rewardItem) {
-        //   // Reward the user for watching an ad.
-        // });
-        // await firebaseFunction.uploadOrUpdateSubjectScore(
-        //     widget.subject[0], _score);
-        // await firebaseFunction
-        //     .updateResult(
-        //         widget.subject[0], balance, points, money, _score, context)
-        //     .whenComplete(() {
-        //   showResult();
-        // });
 
         timer?.cancel();
         setState(() {});
@@ -458,11 +444,8 @@ class _SingleQuizScreenState extends State<SingleQuizScreen> {
                   controller: controller,
                   isLoop: false,
                   onEnd: () {
-                    Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => RewardsScreen()),
-                        (route) => false);
+                    ScaffoldMessenger.of(context)
+                        .showSnackBar(SnackBar(content: Text('last page')));
                   },
                   initialIndex: 0,
                   cardsCount: questions.length,

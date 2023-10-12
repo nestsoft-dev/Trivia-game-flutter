@@ -42,13 +42,16 @@ dependencies:
   intl: ^0.18.1
   in_app_review: ^2.0.6
   smooth_page_indicator: ^1.1.0
-  shared_preferences: ^2.2.0
+  shared_preferences: ^2.2.2
   avatar_glow: ^2.0.2
   in_app_purchase: ^3.1.10
   animate_do: ^3.1.2
   onepref: ^0.0.14
   flutter_card_swiper: ^6.0.0
   http: ^1.1.0
+  google_nav_bar: ^5.0.6
+  auth_buttons: ^1.0.1+4
+  confetti: ^0.7.0
 
 
 dev_dependencies:
