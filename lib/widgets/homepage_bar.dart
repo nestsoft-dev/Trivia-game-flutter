@@ -6,10 +6,14 @@ import '../constants/constant.dart';
 
 class HomePageBar extends StatelessWidget {
   String greetings;
+  String name;
+  String usserImage;
   IconData icon;
-   HomePageBar({
+  HomePageBar({
     Key? key,
     required this.greetings,
+    required this.name,
+    required this.usserImage,
     required this.icon,
   }) : super(key: key);
 
@@ -41,14 +45,14 @@ class HomePageBar extends StatelessWidget {
               SizedBox(
                 height: 8,
               ),
-              Text('Ikenna',
+              Text(name,
                   style: GoogleFonts.podkova(color: Colors.white, fontSize: 18))
             ],
           ),
           Padding(
             padding: const EdgeInsets.only(bottom: 15),
             child: CircleAvatar(
-              backgroundImage: NetworkImage(imageUrl),
+              backgroundImage: NetworkImage(usserImage),
             ),
           )
         ]),

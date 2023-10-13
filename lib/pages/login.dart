@@ -86,17 +86,36 @@ class _LoginPageState extends State<LoginPage> {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: GestureDetector(
                 onTap: _isAnimated
-                    ? () {}
-                    : () {
-                        setState(() {
-                          _isAnimated = true;
-                        });
+                    ? () {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(
+                                  'Loading')));
+                    }
+                    : () async {
+                        if (_email.text == '' || _password.text == "") {
+                        } else if (_password.text.length < 6) {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(
+                                  'password must be more than 6 characters')));
+                        }else{
+                           setState(() {
+                            _isAnimated = true;
+                          });
 
-                        Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => BottomNav()),
-                            (route) => false);
+                          await firebaseFun.login(
+                              context, _email.text, _password.text).then((value) {
+                                  Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => BottomNav()),
+                                (route) => false);
+                                  setState(() {
+                            _isAnimated = false;
+                          });
+                              });
+
+                        
+                        }
                       },
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 500),

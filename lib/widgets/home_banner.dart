@@ -6,11 +6,13 @@ class BannerHome extends StatelessWidget {
   const BannerHome({
     Key? key,
     required this.size,
-    required this.diamonds,
+    required this.diamonds, required this.points,
   }) : super(key: key);
 
   final Size size;
-  final int diamonds;
+  final double diamonds;
+  final double points;
+
 
   @override
   Widget build(BuildContext context) {
@@ -39,15 +41,18 @@ class BannerHome extends StatelessWidget {
                       fontWeight: FontWeight.w500,
                       color: Colors.grey[350]),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
-                Text(
-                  '2553',
-                  style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.yellow),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    '$points',
+                    style: const TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.yellow),
+                  ),
                 )
               ],
             ),

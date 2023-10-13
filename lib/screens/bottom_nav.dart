@@ -35,32 +35,34 @@ class _BottomNavState extends State<BottomNav> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: _screen[_currentIndex],
-      bottomNavigationBar: GNav(
-          selectedIndex: _currentIndex,
-          onTabChange: onTap,
-          rippleColor: Color.fromARGB(
-              255, 136, 93, 255), // tab button ripple color when pressed
-          hoverColor:
-              Color.fromARGB(255, 106, 65, 255), // tab button hover color
-          // haptic: true, // haptic feedback
-          tabBorderRadius: 15,
-          curve: Curves.easeOutExpo, // tab animation curves
-          duration: const Duration(milliseconds: 900), // tab animation duration
-          gap: 8, // the tab button gap between icon and text
-          color: Colors.grey[350], // unselected icon color
-          activeColor: Colors.purple, // selected icon and text color
-          iconSize: 24, // tab button icon size
-          tabBackgroundColor:
-              Colors.purple.withOpacity(0.1), // selected tab background color
-          padding: const EdgeInsets.symmetric(
-              horizontal: 20, vertical: 15), // navigation bar padding
-          tabs: const [
-            GButton(icon: FontAwesomeIcons.homeUser, text: 'Home'),
-            GButton(icon: FontAwesomeIcons.search, text: 'Search'),
-            GButton(icon: FontAwesomeIcons.message, text: 'Chats'),
-            GButton(icon: FontAwesomeIcons.moneyCheckDollar, text: 'Payment'),
-            GButton(icon: FontAwesomeIcons.userAstronaut, text: 'Profile')
-          ]),
+      bottomNavigationBar: Container(
+        color: Colors.white,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 20),
+          child: GNav(
+              selectedIndex: _currentIndex,
+              onTabChange: onTap,
+              backgroundColor: Colors.white,
+              rippleColor: Color.fromARGB(
+                  255, 136, 93, 255), // tab button ripple color when pressed
+              tabBorderRadius: 15,
+              curve: Curves.easeOutExpo, // tab animation curves
+              gap: 15, // the tab button gap between icon and text
+              color: Colors.grey[350], // unselected icon color
+              activeColor: Colors.purple, // selected icon and text color
+              iconSize: 24, // tab button icon size
+              tabBackgroundColor:
+                  Colors.purple.withOpacity(0.1), // selected tab background color
+              padding: const EdgeInsets.all(16), // navigation bar padding
+              tabs: const [
+                GButton(icon: FontAwesomeIcons.homeUser, text: 'Home'),
+                GButton(icon: FontAwesomeIcons.search, text: 'Search'),
+                GButton(icon: FontAwesomeIcons.message, text: 'Chats'),
+                GButton(icon: FontAwesomeIcons.moneyCheckDollar, text: 'Payment'),
+                GButton(icon: FontAwesomeIcons.userAstronaut, text: 'Profile')
+              ]),
+        ),
+      ),
       // bottomNavigationBar: BottomNavigationBar(
       //     currentIndex: _currentIndex,
       //     onTap: onTap,

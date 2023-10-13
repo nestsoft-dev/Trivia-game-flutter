@@ -4,6 +4,7 @@ import 'package:trival_game/widgets/textinput.dart';
 import 'package:auth_buttons/auth_buttons.dart';
 
 import '../firebase/firebase_functions.dart';
+import '../screens/bottom_nav.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -18,7 +19,7 @@ class _RegisterPageState extends State<RegisterPage> {
   TextEditingController _password = TextEditingController();
   bool _isPassword = true;
   bool _isAnimated = false;
-   FirebaseFun firebaseFun = FirebaseFun();
+  FirebaseFun firebaseFun = FirebaseFun();
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -90,11 +91,39 @@ class _RegisterPageState extends State<RegisterPage> {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: GestureDetector(
                 onTap: _isAnimated
-                    ? () {}
-                    : () {
-                        setState(() {
-                          _isAnimated = true;
-                        });
+                    ? () {
+                          ScaffoldMessenger.of(context)
+                            .showSnackBar(SnackBar(content: Text('Registering')));
+                    }
+                    : () async {
+                        if (_name.text == '' ||
+                            _email.text == '' ||
+                            _password.text == '') {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const  SnackBar(content: Text('Please Provide input')));
+                        } else if (_password.text.length < 6) {
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                              content:  Text(
+                                  'Please Password must be more than 6 characters')));
+                        } else {
+                          setState(() {
+                            _isAnimated = true;
+                          });
+                          await firebaseFun
+                              .register(context, _name.text, _email.text,
+                                  _password.text)
+                              .then((value) {
+                                  setState(() {
+                            _isAnimated = false;
+                          });
+                                Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => BottomNav()),
+                                (route) => false);
+
+                              });
+                        }
                       },
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 500),
@@ -146,10 +175,9 @@ class _RegisterPageState extends State<RegisterPage> {
                   color: Colors.grey,
                   thickness: 1,
                 ),
-            
               ],
             ),
-                GoogleAuthButton(
+            GoogleAuthButton(
               style: const AuthButtonStyle(
                 iconType: AuthIconType.outlined,
               ),

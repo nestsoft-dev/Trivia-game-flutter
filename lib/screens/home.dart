@@ -1,10 +1,13 @@
 import 'dart:async';
 import 'package:animate_do/animate_do.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:intl/intl.dart';
 import '../constants/constant.dart';
+import '../firebase/firebase_functions.dart';
+import '../model/user_model.dart';
 import '../services/in_app_review.dart';
 import '../widgets/chat_banner.dart';
 import '../widgets/home_banner.dart';
@@ -98,6 +101,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   final MyInAppReview _ratingService = MyInAppReview();
+  FirebaseFun _firebaseFun = FirebaseFun();
   @override
   void initState() {
     //checkForUpdate();
@@ -161,8 +165,9 @@ class _HomePageState extends State<HomePage> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) =>
-                                         SingleQuizScreen(subject: 'english',)));
+                                    builder: (context) => SingleQuizScreen(
+                                          subject: 'english',
+                                        )));
                           },
                           child: Container(
                             height: 50,
@@ -212,144 +217,179 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: defaultButton,
-      body: ListView(children: [
-        SizedBox(
-          height: size.height * 0.05,
-        ),
-        HomePageBar(
-          greetings: _greeting,
-          icon: icontype!,
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        BannerHome(
-          size: size,
-          diamonds: 0,
-        ),
-        const SizedBox(
-          height: 35,
-        ),
-        Container(
-          height: size.height * 0.27,
-          child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: 3,
-              itemBuilder: (context, index) {
-                if (index == 0) {
-                  return FadeOut(child: ChatBanner(size: size));
-                } else if (index == 1) {
-                  return BounceInRight(
-                      duration: Duration(seconds: 5),
-                      child: ReferralBanner(size: size));
-                } else {
-                  return BounceInDown(
-                      duration: Duration(seconds: 2),
-                      child: WithdrawalBanner(size: size));
-                }
-              }),
-        ),
-
-        // const Spacer(),
-        const SizedBox(
-          height: 40,
-        ),
-        Container(
-          height: size.height * 0.48,
-          decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(20),
-                topRight: Radius.circular(20),
-              )),
-          child: Column(
-            children: [
-              const SizedBox(
-                height: 10,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Top Quiz',
-                      style: TextStyle(color: defaultButton, fontSize: 25),
+        backgroundColor: defaultButton,
+        body: StreamBuilder<DocumentSnapshot>(
+            stream: _firebaseFun.getuserData(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.active) {
+                if (snapshot.hasData) {
+                  Map<String, dynamic> userData =
+                      snapshot.data!.data() as Map<String, dynamic>;
+                  UserModel user = UserModel.fromMap(userData);
+                  return ListView(children: [
+                    SizedBox(
+                      height: size.height * 0.05,
                     ),
-                    TextButton(
-                        onPressed: () {}, child: const Text('Select Any'))
-                  ],
-                ),
-              ),
-              Expanded(
-                  child: ListView.builder(
-                      itemCount: 4,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.only(
-                              top: 5, right: 10, left: 10),
-                          child: GestureDetector(
-                            onTap: () => showMyDialog(),
-                            child: Container(
-                              height: 90,
-                              width: size.width,
-                              decoration: BoxDecoration(
-                                  border: Border.all(
-                                      color: defaultButton, width: 1),
-                                  borderRadius: BorderRadius.circular(12)),
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 20),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    //image
-                                    CircleAvatar(
-                                      radius: 30,
-                                      child: Lottie.asset(lotties[index]),
-                                    ),
+                    HomePageBar(
+                      greetings: _greeting,
+                      icon: icontype!,
+                      name: user.name,
+                      usserImage: user.userImage,
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    BannerHome(
+                      size: size,
+                      diamonds: user.diamonds,
+                      points: user.point,
+                    ),
+                    const SizedBox(
+                      height: 35,
+                    ),
+                    Container(
+                      height: size.height * 0.27,
+                      child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: 3,
+                          itemBuilder: (context, index) {
+                            if (index == 0) {
+                              return FadeOut(child: ChatBanner(size: size));
+                            } else if (index == 1) {
+                              return BounceInRight(
+                                  duration: Duration(seconds: 5),
+                                  child: ReferralBanner(size: size));
+                            } else {
+                              return BounceInDown(
+                                  duration: Duration(seconds: 2),
+                                  child: WithdrawalBanner(size: size));
+                            }
+                          }),
+                    ),
 
-                                    //column-->subject-->des
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 15),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            subjects[index],
-                                            style: GoogleFonts.mochiyPopPOne(
-                                                fontSize: 18),
-                                          ),
-                                          const SizedBox(
-                                            height: 10,
-                                          ),
-                                          Text(
-                                            desc[index],
-                                            style: GoogleFonts.poppins(),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-
-                                    //arrow start
-                                    IconButton(
-                                        onPressed: () {},
-                                        icon: Icon(FontAwesomeIcons.arrowRight))
-                                  ],
+                    // const Spacer(),
+                    const SizedBox(
+                      height: 40,
+                    ),
+                    Container(
+                      height: size.height * 0.48,
+                      decoration: const BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            topRight: Radius.circular(20),
+                          )),
+                      child: Column(
+                        children: [
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Top Quiz',
+                                  style: TextStyle(
+                                      color: defaultButton, fontSize: 25),
                                 ),
-                              ),
+                                TextButton(
+                                    onPressed: () {},
+                                    child: const Text('Select Any'))
+                              ],
                             ),
                           ),
-                        );
-                      }))
-            ],
-          ),
-        )
-      ]),
-    );
+                          Expanded(
+                              child: ListView.builder(
+                                  itemCount: 4,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemBuilder: (context, index) {
+                                    return Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 5, right: 10, left: 10),
+                                      child: GestureDetector(
+                                        onTap: () => showMyDialog(),
+                                        child: Container(
+                                          height: 90,
+                                          width: size.width,
+                                          decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  color: defaultButton,
+                                                  width: 1),
+                                              borderRadius:
+                                                  BorderRadius.circular(12)),
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 20),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                //image
+                                                CircleAvatar(
+                                                  radius: 30,
+                                                  child: Lottie.asset(
+                                                      lotties[index]),
+                                                ),
+
+                                                //column-->subject-->des
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          top: 15),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(
+                                                        subjects[index],
+                                                        style: GoogleFonts
+                                                            .mochiyPopPOne(
+                                                                fontSize: 18),
+                                                      ),
+                                                      const SizedBox(
+                                                        height: 10,
+                                                      ),
+                                                      Text(
+                                                        desc[index],
+                                                        style: GoogleFonts
+                                                            .poppins(),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+
+                                                //arrow start
+                                                IconButton(
+                                                    onPressed: () {},
+                                                    icon: Icon(FontAwesomeIcons
+                                                        .arrowRight))
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  }))
+                        ],
+                      ),
+                    )
+                  ]);
+                } else {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              } else if (snapshot.hasError) {
+                return Text('Error');
+              } else {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+            }));
   }
 }
