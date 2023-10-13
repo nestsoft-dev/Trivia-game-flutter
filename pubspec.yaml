@@ -61,6 +61,9 @@ dependencies:
   firebase_storage: ^11.2.8
   image_picker: ^1.0.4
   permission_handler: ^11.0.1
+  url_launcher: ^6.1.14
+  flutter_share: ^2.0.0
+  fade_shimmer: ^2.2.0
 
 
 dev_dependencies:

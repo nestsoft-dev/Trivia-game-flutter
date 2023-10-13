@@ -1,13 +1,18 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 
 import 'dart:convert';
 
 class UserModel {
   String name;
+  String email;
+  String referralCode;
   double point;
   double diamonds;
   String userImage;
   UserModel({
     required this.name,
+    required this.email,
+    required this.referralCode,
     required this.point,
     required this.diamonds,
     required this.userImage,
@@ -15,12 +20,16 @@ class UserModel {
 
   UserModel copyWith({
     String? name,
+    String? email,
+    String? referralCode,
     double? point,
     double? diamonds,
     String? userImage,
   }) {
     return UserModel(
       name: name ?? this.name,
+      email: email ?? this.email,
+      referralCode: referralCode ?? this.referralCode,
       point: point ?? this.point,
       diamonds: diamonds ?? this.diamonds,
       userImage: userImage ?? this.userImage,
@@ -30,6 +39,8 @@ class UserModel {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'name': name,
+      'email': email,
+      'referralCode': referralCode,
       'point': point,
       'diamonds': diamonds,
       'userImage': userImage,
@@ -39,6 +50,8 @@ class UserModel {
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
       name: map['name'] as String,
+      email: map['email'] as String,
+      referralCode: map['referralCode'] as String,
       point: map['point'] as double,
       diamonds: map['diamonds'] as double,
       userImage: map['userImage'] as String,
@@ -51,7 +64,7 @@ class UserModel {
 
   @override
   String toString() {
-    return 'UserModel(name: $name, point: $point, diamonds: $diamonds, userImage: $userImage)';
+    return 'UserModel(name: $name, email: $email, referralCode: $referralCode, point: $point, diamonds: $diamonds, userImage: $userImage)';
   }
 
   @override
@@ -60,6 +73,8 @@ class UserModel {
   
     return 
       other.name == name &&
+      other.email == email &&
+      other.referralCode == referralCode &&
       other.point == point &&
       other.diamonds == diamonds &&
       other.userImage == userImage;
@@ -68,6 +83,8 @@ class UserModel {
   @override
   int get hashCode {
     return name.hashCode ^
+      email.hashCode ^
+      referralCode.hashCode ^
       point.hashCode ^
       diamonds.hashCode ^
       userImage.hashCode;

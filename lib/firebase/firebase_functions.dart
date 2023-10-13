@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -11,10 +13,30 @@ class FirebaseFun {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn();
+  String referralCode = "";
+
+  // Generate a random alphanumeric code of a specified length
+  String generateRandomCode(int length) {
+    final String characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    String code = '';
+    final Random random = Random();
+
+    for (int i = 0; i < length; i++) {
+      code += characters[random.nextInt(characters.length)];
+    }
+
+    return code;
+  }
+
+  void generateReferralCode() {
+    // Generate a unique referral code for the user
+    referralCode = generateRandomCode(6);
+  }
 
   // Sign in with Google
   Future<User?> signInWithGoogle(BuildContext context) async {
     try {
+      generateReferralCode();
       final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
       if (googleUser == null) return null;
 
@@ -24,8 +46,13 @@ class FirebaseFun {
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
-      UserModel userModel =
-          UserModel(name: '', point: 0, diamonds: 0, userImage: imageUrl);
+      UserModel userModel = UserModel(
+          name: '',
+          point: 0,
+          diamonds: 0,
+          userImage: imageUrl,
+          email: '',
+          referralCode: referralCode);
 
       final UserCredential authResult =
           await _auth.signInWithCredential(credential);
@@ -46,10 +73,17 @@ class FirebaseFun {
 
   //register
   Future<void> register(
+    
       BuildContext context, String name, String email, String password) async {
     try {
-      UserModel userModel =
-          UserModel(name: name, point: 0, diamonds: 0, userImage: imageUrl);
+      generateReferralCode();
+      UserModel userModel = UserModel(
+          name: name,
+          point: 0,
+          diamonds: 0,
+          userImage: imageUrl,
+          email: email,
+          referralCode: referralCode);
       await _auth
           .createUserWithEmailAndPassword(email: email, password: password)
           .then((value) async => firebaseFirestore

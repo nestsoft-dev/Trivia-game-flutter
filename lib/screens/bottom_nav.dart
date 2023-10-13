@@ -38,11 +38,12 @@ class _BottomNavState extends State<BottomNav> {
       bottomNavigationBar: Container(
         color: Colors.white,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           child: GNav(
               selectedIndex: _currentIndex,
               onTabChange: onTap,
               backgroundColor: Colors.white,
+              duration: const Duration(milliseconds: 900),
               rippleColor: Color.fromARGB(
                   255, 136, 93, 255), // tab button ripple color when pressed
               tabBorderRadius: 15,
@@ -51,40 +52,20 @@ class _BottomNavState extends State<BottomNav> {
               color: Colors.grey[350], // unselected icon color
               activeColor: Colors.purple, // selected icon and text color
               iconSize: 24, // tab button icon size
-              tabBackgroundColor:
-                  Colors.purple.withOpacity(0.1), // selected tab background color
-              padding: const EdgeInsets.all(16), // navigation bar padding
+              tabBackgroundColor: Colors.purple
+                  .withOpacity(0.1), // selected tab background color
+              padding: const EdgeInsets.all(13), // navigation bar padding
               tabs: const [
                 GButton(icon: FontAwesomeIcons.homeUser, text: 'Home'),
                 GButton(icon: FontAwesomeIcons.search, text: 'Search'),
                 GButton(icon: FontAwesomeIcons.message, text: 'Chats'),
-                GButton(icon: FontAwesomeIcons.moneyCheckDollar, text: 'Payment'),
+                GButton(
+                    icon: FontAwesomeIcons.moneyCheckDollar, text: 'Payment'),
                 GButton(icon: FontAwesomeIcons.userAstronaut, text: 'Profile')
               ]),
         ),
       ),
-      // bottomNavigationBar: BottomNavigationBar(
-      //     currentIndex: _currentIndex,
-      //     onTap: onTap,
-      //     elevation: 0,
-      //     selectedItemColor: defaultButton,
-      //     unselectedItemColor: Colors.grey,
-      //     showSelectedLabels: false,
-      //     showUnselectedLabels: false,
-      //     type: BottomNavigationBarType.fixed,
-      //     items: const [
-      //       BottomNavigationBarItem(
-      //           icon: Icon(FontAwesomeIcons.homeUser), label: 'Home'),
-      //       BottomNavigationBarItem(
-      //           icon: Icon(FontAwesomeIcons.search), label: 'Search'),
-      //       BottomNavigationBarItem(
-      //           icon: Icon(FontAwesomeIcons.message), label: 'Chats'),
-      //       BottomNavigationBarItem(
-      //           icon: Icon(FontAwesomeIcons.moneyCheckDollar),
-      //           label: 'Payment'),
-      //       BottomNavigationBarItem(
-      //           icon: Icon(FontAwesomeIcons.userAstronaut), label: 'Profile'),
-      //     ]),
+     
     );
   }
 }
