@@ -15,6 +15,7 @@ import '../widgets/homepage_bar.dart';
 import 'package:lottie/lottie.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../widgets/my_shrimmer.dart';
 import '../widgets/refer_card.dart';
 import '../widgets/withdrawal_card.dart';
 import 'single_quiz.dart';
@@ -386,9 +387,7 @@ class _HomePageState extends State<HomePage> {
               } else if (snapshot.hasError) {
                 return Text('Error');
               } else {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
+                return MyShrimmer();
               }
             }));
   }

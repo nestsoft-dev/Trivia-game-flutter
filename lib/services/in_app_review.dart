@@ -33,7 +33,7 @@ class MyInAppReview {
         _inAppReview.requestReview();
       } else {
         _inAppReview.openStoreListing(
-            appStoreId: 'com.netsoft.bitcoin.bitcoin_cash');
+            appStoreId: 'com.netsoftdevelopers.trival_game');
       }
       return true;
     } catch (e) {

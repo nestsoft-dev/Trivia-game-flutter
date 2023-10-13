@@ -14,6 +14,8 @@ import '../firebase/firebase_functions.dart';
 import '../pages/onboarding_screen.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:permission_handler/permission_handler.dart';
+import '../services/in_app_review.dart';
+import '../widgets/my_shrimmer.dart';
 import '../widgets/my_snack.dart';
 import '../widgets/profile_select.dart';
 
@@ -92,6 +94,7 @@ class _ProfileState extends State<Profile> {
   }
 
   bool _isUploading = false;
+  MyInAppReview review = MyInAppReview();
 
   @override
   Widget build(BuildContext context) {
@@ -203,8 +206,7 @@ class _ProfileState extends State<Profile> {
                         final Uri emailLaunchUri = Uri(
                           scheme: 'mailto',
                           path: 'Netsoftdevelopers@gmail.com',
-                          query:
-                              'Please I need help....',
+                          query: 'Please I need help....',
                         );
 
                         launchUrl(emailLaunchUri);
@@ -222,11 +224,13 @@ class _ProfileState extends State<Profile> {
                       height: size.height * 0.02,
                     ),
                     GestureDetector(
-                      onTap:()async{
-                         await FlutterShare.share(
+                      onTap: () async {
+                        await FlutterShare.share(
                             title: 'Join us and Learn',
-                            text: 'Join the winning team and earn cool rewards of giftscards and paypals funds using this promo code ${userModel.referralCode}',
-                            linkUrl: 'https://play.google.com/store/apps/details?id=com.netsoftdevelopers.trival_game',
+                            text:
+                                'Join the winning team and earn cool rewards of giftscards and paypals funds using this promo code ${userModel.referralCode}',
+                            linkUrl:
+                                'https://play.google.com/store/apps/details?id=com.netsoftdevelopers.trival_game',
                             chooserTitle: 'Join And Earn');
                       },
                       child: ProfileSelect(
@@ -242,8 +246,6 @@ class _ProfileState extends State<Profile> {
                       height: size.height * 0.02,
                     ),
 
-                    
-                    
                     ProfileSelect(
                       title: 'Settings',
                       des: 'Set the app to match you',
@@ -255,12 +257,17 @@ class _ProfileState extends State<Profile> {
                     SizedBox(
                       height: size.height * 0.02,
                     ),
-                    ProfileSelect(
-                      title: 'Rate App',
-                      des: 'Rate app on playstore for more points',
-                      leadingIcon: Icons.rate_review,
-                      trialing: FontAwesomeIcons.star,
-                      backgroundColor: Colors.yellow.withOpacity(0.7),
+                    GestureDetector(
+                      onTap: () {
+                        review.showRating();
+                      },
+                      child: ProfileSelect(
+                        title: 'Rate App',
+                        des: 'Rate app on playstore for more points',
+                        leadingIcon: Icons.rate_review,
+                        trialing: FontAwesomeIcons.star,
+                        backgroundColor: Colors.yellow.withOpacity(0.7),
+                      ),
                     ),
 
                     SizedBox(
@@ -276,15 +283,11 @@ class _ProfileState extends State<Profile> {
                   ],
                 );
               } else if (snapshot.hasError) {
-                return Center(
+                return const Center(
                   child: Text('Something Went wrong'),
                 );
               } else {
-                return Center(
-                  child: CircularProgressIndicator(
-                    color: Colors.white,
-                  ),
-                );
+                return const MyShrimmer();
               }
             }));
   }

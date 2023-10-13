@@ -15,6 +15,7 @@ class FirebaseFun {
   final GoogleSignIn googleSignIn = GoogleSignIn();
   String referralCode = "";
 
+
   // Generate a random alphanumeric code of a specified length
   String generateRandomCode(int length) {
     final String characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -124,6 +125,8 @@ class FirebaseFun {
         .doc(_auth.currentUser!.uid)
         .snapshots();
   }
+
+ 
 
   //upload purchased Diamonds
   Future<void> uploadPurchaseDiamond(double purchasedDiamonds) async {

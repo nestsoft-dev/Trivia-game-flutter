@@ -8,7 +8,7 @@ final Color lighBlue = Color.fromARGB(255, 1, 27, 255);
 final Color darkblue = Color.fromARGB(255, 0, 5, 70);
 final Color lighyellow = Colors.yellow;
 final String imageUrl =
-    'https://firebasestorage.googleapis.com/v0/b/my-bch-farm.appspot.com/o/cj.jpg?alt=media&token=bece50b2-1cfe-41ca-94d5-17a0a916ae4f';
+    'https://firebasestorage.googleapis.com/v0/b/game-trivial.appspot.com/o/netsoft%20logo-01.jpg?alt=media&token=14db4774-1c1a-4e69-8d29-87be1e397747';
 
 List<Map<String, dynamic>> onBoardingList = [
   {
