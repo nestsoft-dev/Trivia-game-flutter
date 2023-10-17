@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import '../constants/constant.dart';
+import 'bottom_nav.dart';
 
 class RewardsScreen extends StatefulWidget {
   const RewardsScreen({super.key});
@@ -189,37 +190,42 @@ class _RewardsScreenState extends State<RewardsScreen> {
                   SizedBox(
                     height: size.height * 0.10,
                   ),
-                  Container(
-                    height: 65,
-                    width: 200,
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: Colors.pinkAccent,
-                        border: Border.all(
-                            color: lighyellow,
-                            width: 5,
-                            style: BorderStyle.solid)),
-                    child: Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Back Home',
-                            style: GoogleFonts.poppins(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 17,
-                                color: Colors.white),
-                          ),
-                          const SizedBox(
-                            width: 3,
-                          ),
-                          const Icon(
-                            FontAwesomeIcons.house,
-                            color: Colors.white,
-                            size: 24,
-                          )
-                        ],
+                  GestureDetector(
+                    onTap: (){
+                       Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>const BottomNav()), (route) => false) ;
+                    },
+                    child: Container(
+                      height: 65,
+                      width: 200,
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: Colors.pinkAccent,
+                          border: Border.all(
+                              color: lighyellow,
+                              width: 5,
+                              style: BorderStyle.solid)),
+                      child: Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Back Home',
+                              style: GoogleFonts.poppins(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 17,
+                                  color: Colors.white),
+                            ),
+                            const SizedBox(
+                              width: 3,
+                            ),
+                            const Icon(
+                              FontAwesomeIcons.house,
+                              color: Colors.white,
+                              size: 24,
+                            )
+                          ],
+                        ),
                       ),
                     ),
                   )

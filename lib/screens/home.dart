@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:animate_do/animate_do.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_share/flutter_share.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:intl/intl.dart';
@@ -18,6 +19,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../widgets/my_shrimmer.dart';
 import '../widgets/refer_card.dart';
 import '../widgets/withdrawal_card.dart';
+import 'payment.dart';
 import 'single_quiz.dart';
 
 class HomePage extends StatefulWidget {
@@ -259,11 +261,29 @@ class _HomePageState extends State<HomePage> {
                             } else if (index == 1) {
                               return BounceInRight(
                                   duration: Duration(seconds: 5),
-                                  child: ReferralBanner(size: size));
+                                  child: GestureDetector(
+                                      onTap: () async {
+                                        await FlutterShare.share(
+                                            title: 'Join us and Learn',
+                                            text:
+                                                'Join the winning team and earn cool rewards of giftscards and paypals funds using this promo code ${user.referralCode}',
+                                            linkUrl:
+                                                'https://play.google.com/store/apps/details?id=com.netsoftdevelopers.trival_game',
+                                            chooserTitle: 'Join And Earn');
+                                      },
+                                      child: ReferralBanner(size: size)));
                             } else {
                               return BounceInDown(
-                                  duration: Duration(seconds: 2),
-                                  child: WithdrawalBanner(size: size));
+                                  duration:const Duration(seconds: 2),
+                                  child: GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    RedeemPoints()));
+                                      },
+                                      child: WithdrawalBanner(size: size)));
                             }
                           }),
                     ),

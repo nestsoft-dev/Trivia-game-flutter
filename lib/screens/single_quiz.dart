@@ -10,9 +10,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:trival_game/firebase/firebase_functions.dart';
 
 import '../constants/constant.dart';
 import '../model/question_model.dart';
+import '../model/user_model.dart';
+import '../widgets/my_shrimmer.dart';
 import '../widgets/quiz_card.dart';
 import 'rewards_screen.dart';
 
@@ -197,6 +200,7 @@ class _SingleQuizScreenState extends State<SingleQuizScreen> {
   }
 
   double percentValue = 0.2;
+  
 
   final List<Map<String, dynamic>> questions = [
     {
@@ -392,121 +396,159 @@ class _SingleQuizScreenState extends State<SingleQuizScreen> {
     return true;
   }
 
+  double hint = 0;
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: Colors.blue,
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15),
-        child: ListView(children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: SizedBox(
-              height: 55,
-              width: size.width,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  //points gotten
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        color: Colors.yellowAccent.withOpacity(0.3)),
-                    child: Text(
-                      '$_score points',
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.poppins(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 18,
-                          color: Color.fromARGB(255, 35, 0, 82)),
-                    ),
-                  ),
+        backgroundColor: Colors.blue,
+        body: StreamBuilder(
+            stream: FirebaseFun().getuserData(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                Map<String, dynamic> data =
+                    snapshot.data!.data() as Map<String, dynamic>;
+                UserModel usermodel = UserModel.fromMap(data);
 
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        color: Colors.yellowAccent.withOpacity(0.3)),
-                    child: Text(
-                      '$time ⏰',
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.poppins(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 18,
-                          color: Color.fromARGB(255, 35, 0, 82)),
-                    ),
-                  ),
-                ],
-              ),
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: ListView(children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      child: SizedBox(
+                        height: 55,
+                        width: size.width,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            //points gotten
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12),
+                                      color:
+                                          Colors.yellowAccent.withOpacity(0.3)),
+                                  child: Text(
+                                    '$_score points',
+                                    textAlign: TextAlign.center,
+                                    style: GoogleFonts.poppins(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 18,
+                                        color: Color.fromARGB(255, 35, 0, 82)),
+                                  ),
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12),
+                                      color:
+                                          Colors.purpleAccent.withOpacity(0.3)),
+                                  child: Text(
+                                    'Hint🔔 cost 2💎',
+                                    textAlign: TextAlign.center,
+                                    style: GoogleFonts.poppins(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 18,
+                                        color: Color.fromARGB(255, 35, 0, 82)),
+                                  ),
+                                ),
+                              ],
+                            ),
 
-              /*
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  color: Colors.yellowAccent.withOpacity(0.3)),
+                              child: Text(
+                                '$time ⏰',
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 18,
+                                    color: Color.fromARGB(255, 35, 0, 82)),
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        /*
                _isLoading
               ? Center(
                   child: CircularProgressIndicator(),
                 )
               :
               */
-            ),
-          ),
-          Container(
-            height: size.height * 0.65,
-            child: CardSwiper(
-                controller: controller,
-                isLoop: false,
-                onEnd: () {
-                  controller.dispose();
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => RewardsScreen()),
-                      (route) => false);
-                },
-                initialIndex: 0,
-                cardsCount: questions.length,
-                onSwipe: _onSwipe,
-                onUndo: _onUndo,
-                numberOfCardsDisplayed: 3,
-                backCardOffset: const Offset(40, 40),
-                padding: const EdgeInsets.all(24.0),
-                cardBuilder: (
-                  context,
-                  index,
-                  horizontalThresholdPercentage,
-                  verticalThresholdPercentage,
-                ) {
-                  final question = questions[index];
-                  return QuizCard(question: question);
-                }),
-          ),
-          const SizedBox(
-            height: 25,
-          ),
-          //show progress of the question
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 25),
-            child: Flexible(
-              child: LinearPercentIndicator(
-                width: MediaQuery.of(context).size.width * 0.75,
-                animation: true,
-                animateFromLastPercent: true,
-                lineHeight: 25.0,
-                animationDuration: 2500,
-                percent: percentValue,
-                barRadius: Radius.circular(30),
-                center: Text(
-                  "${percentValue * 100}%",
-                  style: GoogleFonts.mochiyPopOne(
-                      fontSize: 18, color: Colors.white),
-                ),
-                linearStrokeCap: LinearStrokeCap.roundAll,
-                progressColor:
-                    percentValue > 0.5 ? Colors.yellow : Colors.green,
-              ),
-            ),
-          ),
-        ]),
-      ),
-    );
+                      ),
+                    ),
+                    Container(
+                      height: size.height * 0.65,
+                      child: CardSwiper(
+                          controller: controller,
+                          isLoop: false,
+                          onEnd: () {
+                            controller.dispose();
+                            Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => RewardsScreen()),
+                                (route) => false);
+                          },
+                          initialIndex: 0,
+                          cardsCount: questions.length,
+                          onSwipe: _onSwipe,
+                          onUndo: _onUndo,
+                          numberOfCardsDisplayed: 3,
+                          backCardOffset: const Offset(40, 40),
+                          padding: const EdgeInsets.all(24.0),
+                          cardBuilder: (
+                            context,
+                            index,
+                            horizontalThresholdPercentage,
+                            verticalThresholdPercentage,
+                          ) {
+                            final question = questions[index];
+                            return QuizCard(question: question);
+                          }),
+                    ),
+                    const SizedBox(
+                      height: 25,
+                    ),
+                    //show progress of the question
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 25),
+                      child: Flexible(
+                        child: LinearPercentIndicator(
+                          width: MediaQuery.of(context).size.width * 0.75,
+                          animation: true,
+                          animateFromLastPercent: true,
+                          lineHeight: 25.0,
+                          animationDuration: 2500,
+                          percent: percentValue,
+                          barRadius: Radius.circular(30),
+                          center: Text(
+                            "${percentValue * 100}%",
+                            style: GoogleFonts.mochiyPopOne(
+                                fontSize: 18, color: Colors.white),
+                          ),
+                          linearStrokeCap: LinearStrokeCap.roundAll,
+                          progressColor:
+                              percentValue > 0.5 ? Colors.yellow : Colors.green,
+                        ),
+                      ),
+                    ),
+                  ]),
+                );
+              } else if (snapshot.hasError) {
+                return Center(
+                  child: Text('Error'),
+                );
+              } else {
+                return MyShrimmer();
+              }
+            }));
   }
 }

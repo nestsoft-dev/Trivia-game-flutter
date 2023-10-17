@@ -23,7 +23,7 @@ class _BottomNavState extends State<BottomNav> {
     });
   }
 
-  List<Widget> _screen = [
+  List<Widget> _screen = const [
     const HomePage(),
     const SearchPage(),
     const MyChats(),

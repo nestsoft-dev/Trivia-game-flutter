@@ -57,7 +57,7 @@ class _BannerHomeState extends State<BannerHome> {
   }
 
   void creditUser(PurchaseDetails purchaseDetails) async {
-    //FirebaseFun().
+
     for (var product in storeProductIds) {
       if (product.id == purchaseDetails.productID) {
         double newDiamond = widget.diamonds + product.reward!;
@@ -71,10 +71,10 @@ class _BannerHomeState extends State<BannerHome> {
   IApEngine iApEngine = IApEngine();
 
   List<ProductId> storeProductIds = [
-    ProductId(id: 'id', isConsumable: true, reward: 10),
-    ProductId(id: 'id', isConsumable: true, reward: 10),
-    ProductId(id: 'id', isConsumable: true, reward: 10),
-    ProductId(id: 'id', isConsumable: true, reward: 10),
+    ProductId(id: 'diamond_10', isConsumable: true, reward: 10),
+    ProductId(id: 'diamond_30', isConsumable: true, reward: 30),
+    ProductId(id: 'diamond_60', isConsumable: true, reward: 60),
+    //ProductId(id: 'id', isConsumable: true, reward: 10),
   ];
 
   void getProducts() async {
@@ -84,6 +84,7 @@ class _BannerHomeState extends State<BannerHome> {
           setState(() {
             _products.addAll(response.productDetails);
           });
+          debugPrint(_products.length.toString());
         });
       }
     });
@@ -170,6 +171,7 @@ class _BannerHomeState extends State<BannerHome> {
                     ? ElevatedButton(
                         onPressed: () {
                           showDiamonds();
+                          print(_products);
                         },
                         child: const Text('Buy Diamonds'))
                     : Text(

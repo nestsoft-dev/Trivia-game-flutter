@@ -20,17 +20,17 @@ class ChatListItem extends StatelessWidget {
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
         child: ListTile(
-          title: Text('Hello'),
+          title: Text(userName),
           subtitle: const Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Hello bro'),
-              Text('12:30pm'),
+              Text('Message this user'),
+              Text(''),
             ],
           ),
           leading: CircleAvatar(
             radius: 40,
-            backgroundImage: NetworkImage(imageUrl),
+            backgroundImage: NetworkImage(imageLink),
           ),
         ),
       ),

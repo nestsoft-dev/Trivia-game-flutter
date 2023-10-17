@@ -28,9 +28,8 @@ class _MyChatsState extends State<MyChats> {
                 return ListView.builder(
                     itemCount: userList.length,
                     itemBuilder: (context, index) {
-                      Map<String, dynamic> user =
-                          userList[index].data() as Map<String, dynamic>;
-                      UserModel userData = UserModel.fromMap(user);
+                      // user = userList[index].data();
+                     
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 2),
                         child: GestureDetector(
@@ -42,8 +41,8 @@ class _MyChatsState extends State<MyChats> {
                                           const MessageScreen()));
                             },
                             child: ChatListItem(
-                              imageLink: userData.userImage,
-                              userName: userData.name,
+                              imageLink: userList[index]['userImage'],
+                              userName: userList[index]['name'],
                             )),
                       );
                     });

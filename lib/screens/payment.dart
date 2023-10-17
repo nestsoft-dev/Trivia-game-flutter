@@ -20,7 +20,7 @@ class _RedeemPointsState extends State<RedeemPoints> {
         elevation: 0,
         backgroundColor: Colors.white,
         centerTitle: true,
-        title: Text('Redeem Points'),
+        title: const Text('Redeem Points'),
       ),
       body: Stack(
         children: [
