@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:async';
 import 'dart:io';
 
 import 'package:avatar_glow/avatar_glow.dart';
@@ -8,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:onepref/onepref.dart';
 
 import '../firebase/firebase_functions.dart';
+import 'my_snack.dart';
 
 class BannerHome extends StatefulWidget {
   BannerHome({
@@ -18,8 +20,8 @@ class BannerHome extends StatefulWidget {
   }) : super(key: key);
 
   final Size size;
-  final double diamonds;
-  final double points;
+  final int diamonds;
+  final int points;
 
   @override
   State<BannerHome> createState() => _BannerHomeState();
@@ -30,46 +32,25 @@ class _BannerHomeState extends State<BannerHome> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getProducts();
-    iApEngine.inAppPurchase.purchaseStream.listen((event) {
-      listenPurchases(event);
-    });
   }
 
-  Future<void> listenPurchases(List<PurchaseDetails> event) async {
-    for (PurchaseDetails purchase in event) {
-      if (purchase.status == PurchaseStatus.restored ||
-          purchase.status == PurchaseStatus.purchased) {
-        if (Platform.isAndroid &&
-            iApEngine
-                .getProductIdsOnly(storeProductIds)
-                .contains(purchase.productID)) {
-          final InAppPurchaseAndroidPlatformAddition androidPlatformAddition =
-              iApEngine.inAppPurchase.getPlatformAddition();
-        }
-        if (purchase.pendingCompletePurchase) {
-          await iApEngine.inAppPurchase.completePurchase(purchase);
-        }
-        //credit user
-        creditUser(purchase);
-      }
-    }
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    // _streamSubscription!.dispose();
   }
 
   void creditUser(PurchaseDetails purchaseDetails) async {
-
     for (var product in storeProductIds) {
       if (product.id == purchaseDetails.productID) {
-        double newDiamond = widget.diamonds + product.reward!;
+        int newDiamond = widget.diamonds + product.reward!;
         FirebaseFun().uploadPurchaseDiamond(newDiamond);
       }
     }
   }
 
-  final List<ProductDetails> _products = [];
-
-  IApEngine iApEngine = IApEngine();
-
+  List<String> _kIds = <String>['diamond_10', 'diamond_30', 'diamond_60'];
   List<ProductId> storeProductIds = [
     ProductId(id: 'diamond_10', isConsumable: true, reward: 10),
     ProductId(id: 'diamond_30', isConsumable: true, reward: 30),
@@ -77,41 +58,32 @@ class _BannerHomeState extends State<BannerHome> {
     //ProductId(id: 'id', isConsumable: true, reward: 10),
   ];
 
-  void getProducts() async {
-    await iApEngine.getIsAvailable().then((value) async {
-      if (value) {
-        await iApEngine.queryProducts(storeProductIds).then((response) {
-          setState(() {
-            _products.addAll(response.productDetails);
-          });
-          debugPrint(_products.length.toString());
-        });
-      }
-    });
-  }
-
   //show
-  showDiamonds() => showModalBottomSheet(
-      context: context,
-      builder: (context) {
-        return Container(
-          height: MediaQuery.of(context).size.height * 0.25,
-          width: MediaQuery.of(context).size.width,
-          child: ListView.builder(
-              itemCount: _products.length,
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    iApEngine.handlePurchase(_products[index], storeProductIds);
-                  },
-                  child: ListTile(
-                    title: Text('${_products[index].description}💎'),
-                    trailing: Text(_products[index].price),
-                  ),
-                );
-              }),
-        );
-      });
+  // showDiamonds() => showModalBottomSheet(
+  //     context: context,
+  //     builder: (context) {
+  //       return Container(
+  //           height: MediaQuery.of(context).size.height * 0.25,
+  //           width: MediaQuery.of(context).size.width,
+  //           child:
+
+  //            ListView.builder(
+  //               itemCount: _products.length,
+  //               itemBuilder: (context, index) {
+  //                 return GestureDetector(
+  //                   onTap: () {
+  //                     iApEngine.handlePurchase(_products[index], storeProductIds);
+  //                   },
+  //                   child: ListTile(
+  //                     title: Text('${_products[index].description}💎',
+  //                         style: TextStyle(color: Colors.black)),
+  //                     trailing: Text(_products[index].price,
+  //                         style: TextStyle(color: Colors.black)),
+  //                   ),
+  //                 );
+  //               }),
+  //           );
+  //     });
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -170,8 +142,10 @@ class _BannerHomeState extends State<BannerHome> {
                 widget.diamonds < 1
                     ? ElevatedButton(
                         onPressed: () {
-                          showDiamonds();
-                          print(_products);
+                          // showDiamonds();
+
+                          MySnack(context, "Buying Diamonds Coming soon",
+                              Colors.green);
                         },
                         child: const Text('Buy Diamonds'))
                     : Text(

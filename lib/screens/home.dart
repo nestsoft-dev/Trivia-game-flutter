@@ -274,7 +274,7 @@ class _HomePageState extends State<HomePage> {
                                       child: ReferralBanner(size: size)));
                             } else {
                               return BounceInDown(
-                                  duration:const Duration(seconds: 2),
+                                  duration: const Duration(seconds: 2),
                                   child: GestureDetector(
                                       onTap: () {
                                         Navigator.push(
@@ -386,8 +386,9 @@ class _HomePageState extends State<HomePage> {
                                                 //arrow start
                                                 IconButton(
                                                     onPressed: () {},
-                                                    icon: Icon(FontAwesomeIcons
-                                                        .arrowRight))
+                                                    icon: const Icon(
+                                                        FontAwesomeIcons
+                                                            .arrowRight))
                                               ],
                                             ),
                                           ),

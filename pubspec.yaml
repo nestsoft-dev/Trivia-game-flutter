@@ -44,7 +44,7 @@ dependencies:
   smooth_page_indicator: ^1.1.0
   shared_preferences: ^2.2.2
   avatar_glow: ^2.0.2
-  in_app_purchase: ^3.1.10
+  in_app_purchase: ^3.1.11
   animate_do: ^3.1.2
   onepref: ^0.0.14
   flutter_card_swiper: ^6.0.0
@@ -64,6 +64,7 @@ dependencies:
   url_launcher: ^6.1.14
   flutter_share: ^2.0.0
   fade_shimmer: ^2.2.0
+  unity_ads_plugin: ^0.3.9
 
 
 dev_dependencies:

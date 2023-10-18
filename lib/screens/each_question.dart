@@ -461,7 +461,7 @@ class _EachQuestionScreenState extends State<EachQuestionScreen> {
                     verticalThresholdPercentage,
                   ) {
                     final question = questions[index];
-                    return QuizCard(question: question);
+                    return QuizCard(question: question,currentIndex:index);
                   }),
               //time
             ),

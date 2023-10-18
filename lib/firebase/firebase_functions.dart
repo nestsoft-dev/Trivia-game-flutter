@@ -129,7 +129,7 @@ class FirebaseFun {
  
 
   //upload purchased Diamonds
-  Future<void> uploadPurchaseDiamond(double purchasedDiamonds) async {
+  Future<void> uploadPurchaseDiamond(int purchasedDiamonds) async {
     await firebaseFirestore
         .collection('users')
         .doc(_auth.currentUser!.uid)

@@ -96,6 +96,9 @@ class _ProfileState extends State<Profile> {
   bool _isUploading = false;
   MyInAppReview review = MyInAppReview();
 
+  final Uri _url = Uri.parse(
+      'https://play.google.com/store/apps/details?id=com.netsoftdevelopers.trival_game');
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -180,6 +183,7 @@ class _ProfileState extends State<Profile> {
                     ),
                     GestureDetector(
                       onTap: () async {
+                        MySnack(context, 'Deleting account', Colors.red);
                         await _firebaseFun.deleteUser(context).then((value) {
                           Navigator.pushAndRemoveUntil(
                               context,
@@ -247,6 +251,8 @@ class _ProfileState extends State<Profile> {
                     ),
 
                     ProfileSelect(
+                      onTap: () =>
+                          MySnack(context, 'Nothing to Set yet', Colors.red),
                       title: 'Settings',
                       des: 'Set the app to match you',
                       leadingIcon: Icons.settings,
@@ -262,6 +268,12 @@ class _ProfileState extends State<Profile> {
                         review.showRating();
                       },
                       child: ProfileSelect(
+                        onTap: () async {
+                          if (!await launchUrl(_url)) {
+                            throw Exception('Could not launch $_url');
+                          }
+                          await launchUrl(_url);
+                        },
                         title: 'Rate App',
                         des: 'Rate app on playstore for more points',
                         leadingIcon: Icons.rate_review,
@@ -274,6 +286,7 @@ class _ProfileState extends State<Profile> {
                       height: size.height * 0.02,
                     ),
                     ProfileSelect(
+                      onTap: () => MySnack(context, 'Coming soon', Colors.red),
                       title: 'Follow us',
                       des: 'Follow us on social media for updates.',
                       leadingIcon: Icons.follow_the_signs_outlined,

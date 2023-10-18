@@ -6,8 +6,8 @@ class UserModel {
   String name;
   String email;
   String referralCode;
-  double point;
-  double diamonds;
+  int point;
+  int diamonds;
   String userImage;
   UserModel({
     required this.name,
@@ -22,8 +22,8 @@ class UserModel {
     String? name,
     String? email,
     String? referralCode,
-    double? point,
-    double? diamonds,
+    int? point,
+    int? diamonds,
     String? userImage,
   }) {
     return UserModel(
@@ -52,8 +52,8 @@ class UserModel {
       name: map['name'] as String,
       email: map['email'] as String,
       referralCode: map['referralCode'] as String,
-      point: map['point'] as double,
-      diamonds: map['diamonds'] as double,
+      point: map['point'] as int,
+      diamonds: map['diamonds'] as int,
       userImage: map['userImage'] as String,
     );
   }
