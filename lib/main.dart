@@ -1,15 +1,35 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:onepref/onepref.dart';
+import 'package:provider/provider.dart';
+import 'package:unity_ads_plugin/unity_ads_plugin.dart';
+import 'firebase/firebase_functions.dart';
 import 'pages/splash.dart';
+import 'services/unity_ads.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await OnePref.init();
-  await Firebase.initializeApp(
+   await Firebase.initializeApp(
       //options: DefaultFirebaseOptions{},
       );
-  runApp(const MyApp());
+  await OnePref.init();
+  await UnityAds.init(
+    gameId: '5449339',
+    testMode: false,
+    onComplete: () {
+      MyAds().loadAdsInter();
+      MyAds().loadAdsReward();
+
+      print('Ads is Loaded\n\n\n\nLoaded');
+    },
+    onFailed: (error, message) =>
+        print('Initialization Failed: $error $message \n\n\n failed'),
+  );
+
+ 
+  runApp(ChangeNotifierProvider(
+     create: (context) => FirebaseFun(),
+    child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {

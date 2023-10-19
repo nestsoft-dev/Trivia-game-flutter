@@ -1,9 +1,16 @@
+import 'dart:math';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:trival_game/constants/constant.dart';
+import 'package:trival_game/pages/login.dart';
 import 'package:trival_game/widgets/textinput.dart';
 import 'package:auth_buttons/auth_buttons.dart';
 
 import '../firebase/firebase_functions.dart';
+import '../model/user_model.dart';
 import '../screens/bottom_nav.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -19,7 +26,7 @@ class _RegisterPageState extends State<RegisterPage> {
   TextEditingController _password = TextEditingController();
   bool _isPassword = true;
   bool _isAnimated = false;
-  FirebaseFun firebaseFun = FirebaseFun();
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -27,7 +34,7 @@ class _RegisterPageState extends State<RegisterPage> {
       appBar: AppBar(
         elevation: 0,
         centerTitle: true,
-        title: Text('Signup'),
+        title: const Text('Signup'),
         backgroundColor: Colors.transparent,
       ),
       backgroundColor: const Color.fromARGB(255, 214, 192, 248),
@@ -46,7 +53,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   fontSize: 18,
                   color: Color.fromARGB(255, 35, 0, 82)),
             ),
-            SizedBox(
+            const SizedBox(
               height: 15,
             ),
             MyInputField(
@@ -92,37 +99,36 @@ class _RegisterPageState extends State<RegisterPage> {
               child: GestureDetector(
                 onTap: _isAnimated
                     ? () {
-                          ScaffoldMessenger.of(context)
-                            .showSnackBar(SnackBar(content: Text('Registering')));
-                    }
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Registering')));
+                      }
                     : () async {
                         if (_name.text == '' ||
                             _email.text == '' ||
                             _password.text == '') {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const  SnackBar(content: Text('Please Provide input')));
+                              const SnackBar(
+                                  content: Text('Please Provide input')));
                         } else if (_password.text.length < 6) {
                           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                              content:  Text(
+                              content: Text(
                                   'Please Password must be more than 6 characters')));
                         } else {
                           setState(() {
                             _isAnimated = true;
                           });
+
+                          final firebaseFun =
+                              Provider.of<FirebaseFun>(context, listen: false);
+
                           await firebaseFun
                               .register(context, _name.text, _email.text,
                                   _password.text)
                               .then((value) {
-                                  setState(() {
-                            _isAnimated = false;
+                            setState(() {
+                              _isAnimated = false;
+                            });
                           });
-                                Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => BottomNav()),
-                                (route) => false);
-
-                              });
                         }
                       },
                 child: AnimatedContainer(
@@ -163,6 +169,19 @@ class _RegisterPageState extends State<RegisterPage> {
             const SizedBox(
               height: 25,
             ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(
+                child: TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const LoginPage()));
+                    },
+                    child: Text('Login')),
+              ),
+            ),
             const Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -182,6 +201,8 @@ class _RegisterPageState extends State<RegisterPage> {
                 iconType: AuthIconType.outlined,
               ),
               onPressed: () {
+                final firebaseFun =
+                    Provider.of<FirebaseFun>(context, listen: false);
                 firebaseFun.signInWithGoogle(context);
               },
             ),

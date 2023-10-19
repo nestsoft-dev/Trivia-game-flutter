@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:auth_buttons/auth_buttons.dart';
+import 'package:provider/provider.dart';
 import '../constants/constant.dart';
 import '../firebase/firebase_functions.dart';
 import '../screens/bottom_nav.dart';
 import '../screens/home.dart';
 import '../widgets/textinput.dart';
+import 'register.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -18,7 +20,7 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController _password = TextEditingController();
   bool _isPassword = true;
   bool _isAnimated = false;
-  FirebaseFun firebaseFun = FirebaseFun();
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -87,34 +89,29 @@ class _LoginPageState extends State<LoginPage> {
               child: GestureDetector(
                 onTap: _isAnimated
                     ? () {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text(
-                                  'Loading')));
-                    }
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(SnackBar(content: Text('Loading')));
+                      }
                     : () async {
                         if (_email.text == '' || _password.text == "") {
                         } else if (_password.text.length < 6) {
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text(
                                   'password must be more than 6 characters')));
-                        }else{
-                           setState(() {
+                        } else {
+                          setState(() {
                             _isAnimated = true;
                           });
+                          final firebaseFun =
+                              Provider.of<FirebaseFun>(context, listen: false);
 
-                          await firebaseFun.login(
-                              context, _email.text, _password.text).then((value) {
-                                  Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => BottomNav()),
-                                (route) => false);
-                                  setState(() {
-                            _isAnimated = false;
+                          await firebaseFun
+                              .login(context, _email.text, _password.text)
+                              .then((value) {
+                            setState(() {
+                              _isAnimated = false;
+                            });
                           });
-                              });
-
-                        
                         }
                       },
                 child: AnimatedContainer(
@@ -155,6 +152,19 @@ class _LoginPageState extends State<LoginPage> {
             const SizedBox(
               height: 25,
             ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(
+                child: TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const RegisterPage()));
+                    },
+                    child: Text('Register')),
+              ),
+            ),
             const Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -174,6 +184,8 @@ class _LoginPageState extends State<LoginPage> {
                 iconType: AuthIconType.outlined,
               ),
               onPressed: () {
+                final firebaseFun =
+                    Provider.of<FirebaseFun>(context, listen: false);
                 firebaseFun.signInWithGoogle(context);
               },
             ),

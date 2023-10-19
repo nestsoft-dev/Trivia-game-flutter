@@ -236,16 +236,16 @@ class _HomePageState extends State<HomePage> {
                     HomePageBar(
                       greetings: _greeting,
                       icon: icontype!,
-                      name: user.name,
-                      usserImage: user.userImage,
+                      name: user.name!,
+                      usserImage: user.userImage!,
                     ),
                     const SizedBox(
                       height: 10,
                     ),
                     BannerHome(
                       size: size,
-                      diamonds: user.diamonds,
-                      points: user.point,
+                      diamonds: user.diamonds!,
+                      points: user.point!,
                     ),
                     const SizedBox(
                       height: 35,

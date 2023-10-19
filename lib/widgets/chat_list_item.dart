@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import '../constants/constant.dart';
@@ -6,10 +7,12 @@ import '../constants/constant.dart';
 class ChatListItem extends StatelessWidget {
   final String imageLink;
   final String userName;
+  final QueryDocumentSnapshot data;
   const ChatListItem({
     Key? key,
     required this.imageLink,
     required this.userName,
+    required this.data,
   }) : super(key: key);
 
   @override

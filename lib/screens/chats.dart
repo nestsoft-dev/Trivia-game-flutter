@@ -16,6 +16,7 @@ class MyChats extends StatefulWidget {
 }
 
 class _MyChatsState extends State<MyChats> {
+  List<DocumentSnapshot> usersId = [];
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -25,11 +26,14 @@ class _MyChatsState extends State<MyChats> {
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 final userList = snapshot.data!.docs;
+                // userList.forEach((element) {
+                //   usersId.add(element.reference.id);
+                // });
                 return ListView.builder(
                     itemCount: userList.length,
                     itemBuilder: (context, index) {
                       // user = userList[index].data();
-                     
+
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 2),
                         child: GestureDetector(
@@ -37,12 +41,18 @@ class _MyChatsState extends State<MyChats> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          const MessageScreen()));
+                                      builder: (context) => MessageScreen(
+                                            data: userList[index],
+                                            receiverUserEmail: userList[index]
+                                                ['email'],
+                                            receiverUserid: userList[index]
+                                                ['uid'],
+                                          )));
                             },
                             child: ChatListItem(
                               imageLink: userList[index]['userImage'],
                               userName: userList[index]['name'],
+                              data: userList[index],
                             )),
                       );
                     });

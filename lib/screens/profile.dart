@@ -18,6 +18,7 @@ import '../services/in_app_review.dart';
 import '../widgets/my_shrimmer.dart';
 import '../widgets/my_snack.dart';
 import '../widgets/profile_select.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -104,6 +105,10 @@ class _ProfileState extends State<Profile> {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
         backgroundColor: defaultButton,
+        floatingActionButton: FloatingActionButton(
+          onPressed: () async => FirebaseFun().signOut(),
+          child: Icon(FontAwesomeIcons.signOut),
+        ),
         body: StreamBuilder(
             stream: FirebaseFun().getuserData(),
             builder: (context, snapshot) {

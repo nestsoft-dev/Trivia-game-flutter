@@ -18,6 +18,7 @@ import 'package:in_app_purchase/in_app_purchase.dart';
 import '../constants/constant.dart';
 import '../model/question_model.dart';
 import '../model/user_model.dart';
+import '../services/unity_ads.dart';
 import '../widgets/my_shrimmer.dart';
 import '../widgets/my_snack.dart';
 import '../widgets/quiz_card.dart';
@@ -498,7 +499,9 @@ class _SingleQuizScreenState extends State<SingleQuizScreen> {
     return Scaffold(
         floatingActionButton: time < 5
             ? FloatingActionButton(
-                onPressed: () {},
+                onPressed: () async {
+                  MyAds().showRewards()!;
+                },
                 child: Icon(
                   Icons.video_call,
                   color: Colors.yellow[700],
@@ -605,6 +608,8 @@ class _SingleQuizScreenState extends State<SingleQuizScreen> {
                           controller: controller,
                           isLoop: false,
                           onEnd: () {
+                            MyAds().showInter();
+
                             controller.dispose();
                             Navigator.pushAndRemoveUntil(
                                 context,
