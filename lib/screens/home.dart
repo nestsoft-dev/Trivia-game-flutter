@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:animate_do/animate_do.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -64,10 +65,10 @@ class _HomePageState extends State<HomePage> {
     'Art',
   ];
   List<String> desc = [
-    'Test your maths skills',
+    'Test your maths skills in cal',
     'Prove that you are a scientist',
     'Lets See how Good you are!',
-    'Show the Artist in you',
+    'Show the Artist in you in art',
   ];
 
   List<String> lotties = [
@@ -121,7 +122,32 @@ class _HomePageState extends State<HomePage> {
     super.initState();
   }
 
-  showMyDialog() {
+  List<String> artSubjects = [
+    'English',
+    'CRK',
+    'IRS',
+  ];
+
+  List<String> scienceSubjects = [
+    'Physics',
+    'Chemistry',
+    'Biology',
+    'Geography',
+    'Mathematics',
+  ];
+
+  List<String> commercialSubjects = [
+    'Mathematics',
+  ];
+
+  String randomSubject = '';
+  String getRandomSubject(List subjectNames) {
+    Random random = Random();
+    int randomIndex = random.nextInt(subjectNames.length);
+    return subjectNames[randomIndex];
+  }
+
+  showMyDialog(int index) {
     return showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -166,12 +192,46 @@ class _HomePageState extends State<HomePage> {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => SingleQuizScreen(
-                                          subject: 'english',
-                                        )));
+                            switch (index) {
+                              case 0:
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => SingleQuizScreen(
+                                              subject: 'mathematics',
+                                            )));
+                                break;
+                              case 1:
+                                randomSubject = getRandomSubject(scienceSubjects);
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => SingleQuizScreen(
+                                              subject: randomSubject.toLowerCase(),
+                                            )));
+                                break;
+                                   case 2:
+                                randomSubject =
+                                    getRandomSubject(commercialSubjects);
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => SingleQuizScreen(
+                                              subject: randomSubject.toLowerCase(),
+                                            )));
+                                break;
+                                     case 3:
+                                randomSubject =
+                                    getRandomSubject(artSubjects);
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => SingleQuizScreen(
+                                              subject: randomSubject.toLowerCase(),
+                                            )));
+                                break;
+                              default:
+                            }
                           },
                           child: Container(
                             height: 50,
@@ -290,13 +350,9 @@ class _HomePageState extends State<HomePage> {
                     ),
 
                     // const Spacer(),
-                    UnityBannerAd(
-  placementId: 'PLACEMENT_ID',
-  onLoad: (placementId) => print('Banner loaded: $placementId'),
-  onClick: (placementId) => print('Banner clicked: $placementId'),
-  onShown: (placementId) => print('Banner shown: $placementId'),
-  onFailed: (placementId, error, message) => print('Banner Ad $placementId failed: $error $message'),
-),
+                    const UnityBannerAd(
+                      placementId: 'Banner_Android',
+                    ),
                     const SizedBox(
                       height: 40,
                     ),
@@ -338,7 +394,7 @@ class _HomePageState extends State<HomePage> {
                                       padding: const EdgeInsets.only(
                                           top: 5, right: 10, left: 10),
                                       child: GestureDetector(
-                                        onTap: () => showMyDialog(),
+                                        onTap: () => showMyDialog(index),
                                         child: Container(
                                           height: 90,
                                           width: size.width,

@@ -14,7 +14,7 @@ void main() async {
       );
   await OnePref.init();
   await UnityAds.init(
-    gameId: '5449339',
+    gameId: '5376898',
     testMode: false,
     onComplete: () {
       MyAds().loadAdsInter();

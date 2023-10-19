@@ -256,4 +256,14 @@ class FirebaseFun extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  Future<void> scores(int points,int diamonds) async{
+    
+    await firebaseFirestore
+          .collection('users')
+          .doc(_auth.currentUser!.uid).update({
+            'point':points,
+            'diamonds':diamonds,
+          });
+  }
 }

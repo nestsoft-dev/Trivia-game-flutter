@@ -3,7 +3,7 @@ import 'package:unity_ads_plugin/unity_ads_plugin.dart';
 class MyAds {
   initAds() async {
     await UnityAds.init(
-      gameId: '5449339',
+      gameId: '5376898',
       testMode: true,
       onComplete: () {
         loadAdsInter();
@@ -27,7 +27,9 @@ class MyAds {
   loadAdsReward() async {
     await UnityAds.load(
       placementId: 'Rewarded_Android',
-      onComplete: (placementId) => showRewards(),
+      onComplete: (placementId) {
+        //showRewards();
+      },
       onFailed: (placementId, error, message) =>
           print('Load Failed $placementId: $error $message'),
     );

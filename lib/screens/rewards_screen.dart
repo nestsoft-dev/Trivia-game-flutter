@@ -1,16 +1,30 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:math';
 import 'dart:ui';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import 'package:animate_do/animate_do.dart';
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
+
 import '../constants/constant.dart';
+import '../firebase/firebase_functions.dart';
 import 'bottom_nav.dart';
 
 class RewardsScreen extends StatefulWidget {
-  const RewardsScreen({super.key});
+  final int points;
+  final int diamonds;
+  final int defPoint;
+  final int defDiamond;
+  const RewardsScreen({
+    Key? key,
+    required this.points,
+    required this.diamonds,
+    required this.defPoint,
+    required this.defDiamond,
+  }) : super(key: key);
 
   @override
   State<RewardsScreen> createState() => _RewardsScreenState();
@@ -26,11 +40,15 @@ class _RewardsScreenState extends State<RewardsScreen> {
     _controllerCenter =
         ConfettiController(duration: const Duration(seconds: 10));
     _controllerCenter.play();
+    calAll();
+  }
+
+  calAll() async {
+    FirebaseFun().scores(widget.points, widget.diamonds);
   }
 
   @override
   void dispose() {
- 
     super.dispose();
     _controllerCenter.dispose();
   }
@@ -67,7 +85,7 @@ class _RewardsScreenState extends State<RewardsScreen> {
                 ),
               ),
               Align(
-                alignment: Alignment(-1, 1),
+                alignment: const Alignment(-1, 1),
                 child: Container(
                   height: 250,
                   width: 230,
@@ -142,7 +160,7 @@ class _RewardsScreenState extends State<RewardsScreen> {
                                 borderRadius: BorderRadius.circular(12),
                                 color: Colors.yellowAccent.withOpacity(0.3)),
                             child: Text(
-                              '400points',
+                              '${widget.defPoint}points',
                               textAlign: TextAlign.center,
                               style: GoogleFonts.poppins(
                                   fontWeight: FontWeight.w500,
@@ -168,7 +186,7 @@ class _RewardsScreenState extends State<RewardsScreen> {
                                 borderRadius: BorderRadius.circular(12),
                                 color: Colors.blue.withOpacity(0.3)),
                             child: Text(
-                              '400points+ 15💎',
+                              '${widget.defDiamond}💎',
                               textAlign: TextAlign.center,
                               style: GoogleFonts.poppins(
                                   fontWeight: FontWeight.w500,
@@ -191,8 +209,12 @@ class _RewardsScreenState extends State<RewardsScreen> {
                     height: size.height * 0.10,
                   ),
                   GestureDetector(
-                    onTap: (){
-                       Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>const BottomNav()), (route) => false) ;
+                    onTap: () {
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const BottomNav()),
+                          (route) => false);
                     },
                     child: Container(
                       height: 65,
