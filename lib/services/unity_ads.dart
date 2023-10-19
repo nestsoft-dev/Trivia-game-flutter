@@ -4,7 +4,7 @@ class MyAds {
   initAds() async {
     await UnityAds.init(
       gameId: '5449339',
-      testMode: false,
+      testMode: true,
       onComplete: () {
         loadAdsInter();
         loadAdsReward();
@@ -42,10 +42,13 @@ class MyAds {
         onComplete: (placementId) {
           loadAdsInter();
         },
-        onFailed: (placementId, error, message) {});
+        onFailed: (placementId, error, message) {
+          print('Ads Failed');
+        });
   }
 
   showRewards() {
+    print('Show Reward Ads Called');
     UnityAds.showVideoAd(
       placementId: 'Rewarded_Android',
       onStart: (placementId) => print('Video Ad $placementId started'),

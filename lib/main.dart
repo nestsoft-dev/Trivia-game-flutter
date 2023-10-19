@@ -9,7 +9,7 @@ import 'services/unity_ads.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-   await Firebase.initializeApp(
+  await Firebase.initializeApp(
       //options: DefaultFirebaseOptions{},
       );
   await OnePref.init();
@@ -26,10 +26,8 @@ void main() async {
         print('Initialization Failed: $error $message \n\n\n failed'),
   );
 
- 
   runApp(ChangeNotifierProvider(
-     create: (context) => FirebaseFun(),
-    child: const MyApp()));
+      create: (context) => FirebaseFun(), child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {

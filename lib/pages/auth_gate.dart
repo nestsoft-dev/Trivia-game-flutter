@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:trival_game/pages/register.dart';
-
+import 'package:rxdart/rxdart.dart';
 import '../screens/bottom_nav.dart';
 import '../widgets/my_shrimmer.dart';
 import 'login.dart';
@@ -14,10 +14,15 @@ class AuthGate extends StatefulWidget {
 }
 
 class _AuthGateState extends State<AuthGate> {
+  Stream<User?> checkAuth() {
+    Stream<User?> _auth = FirebaseAuth.instance.authStateChanges();
+    return _auth.delay(const Duration(seconds: 5));
+  }
+
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-        stream: FirebaseAuth.instance.authStateChanges(),
+    return StreamBuilder<User?>(
+        stream: checkAuth(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return const BottomNav();

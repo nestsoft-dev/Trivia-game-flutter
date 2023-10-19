@@ -72,6 +72,7 @@ class _MessageScreenState extends State<MessageScreen> {
                     child: TextFormField(
                   controller: messageController,
                   obscureText: false,
+                  maxLength: 45,
                   keyboardType: TextInputType.name,
                   decoration: InputDecoration(
                     filled: true,
@@ -104,22 +105,23 @@ class _MessageScreenState extends State<MessageScreen> {
     List<String> ids = [widget.receiverUserid, _auth.currentUser!.uid];
     ids.sort();
     String chatRoomId = ids.join('_');
-    return FutureBuilder(
-        future: _firebaseFirestore
+    return StreamBuilder(
+        stream: _firebaseFirestore
             .collection('chats')
             .doc(chatRoomId)
             .collection('messages')
             .orderBy('timestamp', descending: false)
-            .get(),
-        // MessagesServices()
-        //  .getMessage(widget.receiverUserid, _auth.currentUser!.uid),
+            .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Text('Error');
           } else if (snapshot.hasData) {
             final userList = snapshot.data!.docs;
-            return ListView(
-              children: userList.map((e) => messageItem(e)).toList(),
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ListView(
+                children: userList.map((e) => messageItem(e)).toList(),
+              ),
             );
           } else {
             return MyShrimmer();
@@ -132,27 +134,33 @@ class _MessageScreenState extends State<MessageScreen> {
     bool _isSender =
         (data['senderId'] == FirebaseAuth.instance.currentUser!.uid);
     return Container(
+      // alignment: _isSender? Alignment.le,
       margin: const EdgeInsets.symmetric(vertical: 10.0),
       child: Row(
         mainAxisAlignment:
             _isSender ? MainAxisAlignment.end : MainAxisAlignment.start,
         children: [
-          Container(
-            padding: const EdgeInsets.all(10.0),
-            decoration: BoxDecoration(
-                color: _isSender ? Colors.blueAccent : defaultButton,
-                borderRadius: _isSender
-                    ? const BorderRadius.only(
-                        topLeft: Radius.circular(15),
-                        bottomLeft: Radius.circular(15),
-                        topRight: Radius.circular(15.0))
-                    : const BorderRadius.only(
-                        topRight: Radius.circular(15.0),
-                        bottomRight: Radius.circular(15.0),
-                        topLeft: Radius.circular(15.0),
-                      )),
-            child: Text('${data['message']}',
-                style: const TextStyle(color: Colors.white)),
+          Align(
+            alignment: _isSender ? Alignment.topRight : Alignment.topLeft,
+            child: Container(
+              padding: const EdgeInsets.all(10.0),
+              decoration: BoxDecoration(
+                  color: _isSender ? Colors.blueAccent : defaultButton,
+                  borderRadius: _isSender
+                      ? const BorderRadius.only(
+                          topLeft: Radius.circular(15),
+                          bottomLeft: Radius.circular(15),
+                          topRight: Radius.circular(15.0))
+                      : const BorderRadius.only(
+                          topRight: Radius.circular(15.0),
+                          bottomRight: Radius.circular(15.0),
+                          topLeft: Radius.circular(15.0),
+                        )),
+              child: Flexible(
+                child: Text('${data['message']}',
+                    style: const TextStyle(color: Colors.white)),
+              ),
+            ),
           )
         ],
       ),

@@ -6,6 +6,7 @@ import 'package:flutter_share/flutter_share.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:intl/intl.dart';
+import 'package:unity_ads_plugin/unity_ads_plugin.dart';
 import '../constants/constant.dart';
 import '../firebase/firebase_functions.dart';
 import '../model/user_model.dart';
@@ -289,6 +290,13 @@ class _HomePageState extends State<HomePage> {
                     ),
 
                     // const Spacer(),
+                    UnityBannerAd(
+  placementId: 'PLACEMENT_ID',
+  onLoad: (placementId) => print('Banner loaded: $placementId'),
+  onClick: (placementId) => print('Banner clicked: $placementId'),
+  onShown: (placementId) => print('Banner shown: $placementId'),
+  onFailed: (placementId, error, message) => print('Banner Ad $placementId failed: $error $message'),
+),
                     const SizedBox(
                       height: 40,
                     ),

@@ -7,6 +7,7 @@ import 'onboarding_screen.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
+  final double _containerSize = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -40,12 +41,16 @@ class SplashScreen extends StatelessWidget {
               colors: [Colors.deepPurple, Colors.purple],
               begin: Alignment.bottomRight)),
       child: Center(
-        child: Container(
-          height: 250,
-          width: 250,
-          decoration: BoxDecoration(
-              color: Colors.white, borderRadius: BorderRadius.circular(20)),
-        ),
+        child: TweenAnimationBuilder(
+            tween: Tween<double>(begin: 0, end: 250),
+            duration: const Duration(milliseconds: 2000),
+            builder: (context, double size, child) {
+              return Image.asset(
+                'assets/altris_icon.png',
+                height: size,
+                width: size,
+              );
+            }),
       ),
     );
   }

@@ -15,6 +15,7 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:trival_game/firebase/firebase_functions.dart';
 import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:unity_ads_plugin/unity_ads_plugin.dart';
 import '../constants/constant.dart';
 import '../model/question_model.dart';
 import '../model/user_model.dart';
@@ -500,7 +501,22 @@ class _SingleQuizScreenState extends State<SingleQuizScreen> {
         floatingActionButton: time < 5
             ? FloatingActionButton(
                 onPressed: () async {
-                  MyAds().showRewards()!;
+                  UnityAds.showVideoAd(
+                    placementId: 'Rewarded_Android',
+                    onStart: (placementId) =>
+                        print('Video Ad $placementId started'),
+                    onClick: (placementId) =>
+                        print('Video Ad $placementId click'),
+                    onSkipped: (placementId) =>
+                        print('Video Ad $placementId skipped'),
+                    onComplete: (placementId) {
+                      setState(() {
+                        time += 3;
+                      });
+                    },
+                    onFailed: (placementId, error, message) =>
+                        print('Video Ad $placementId failed: $error $message'),
+                  );
                 },
                 child: Icon(
                   Icons.video_call,

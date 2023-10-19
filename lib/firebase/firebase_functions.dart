@@ -132,7 +132,6 @@ class FirebaseFun extends ChangeNotifier {
         for (int i = 0; i < 7; i++) {
           code += characters[random.nextInt(characters.length)];
         }
-
         UserModel userModel = UserModel(
             name: name,
             point: 0,
@@ -141,21 +140,33 @@ class FirebaseFun extends ChangeNotifier {
             email: email,
             referralCode: code,
             uid: _auth.currentUser!.uid);
-        UserCredential userCredential = await _auth
-            .createUserWithEmailAndPassword(email: email, password: password);
         await firebaseFirestore
             .collection('users')
             .doc(_auth.currentUser!.uid)
-            .set(userModel.toMap())
-            .then((value) {
-          // Navigator.pushAndRemoveUntil(
-          //     context,
-          //     MaterialPageRoute(builder: (context) => BottomNav()),
-          //     (route) => false);
-        });
+            .set(userModel.toMap());
       });
 
       if (userCredential != null) {
+        // UserModel userModel = UserModel(
+        //     name: name,
+        //     point: 0,
+        //     diamonds: 10,
+        //     userImage: imageUrl,
+        //     email: email,
+        //     referralCode: code,
+        //     uid: _auth.currentUser!.uid);
+        // UserCredential userCredential = await _auth
+        //     .createUserWithEmailAndPassword(email: email, password: password);
+        // await firebaseFirestore
+        //     .collection('users')
+        //     .doc(_auth.currentUser!.uid)
+        //     .set(userModel.toMap())
+        //     .then((value) {
+        //   // Navigator.pushAndRemoveUntil(
+        //   //     context,
+        //   //     MaterialPageRoute(builder: (context) => BottomNav()),
+        //   //     (route) => false);
+        // });
         // User creation was successful
         User? user = userCredential.user;
         if (user != null) {
@@ -210,6 +221,7 @@ class FirebaseFun extends ChangeNotifier {
   Future<void> signOut() async {
     // await googleSignIn.signOut();
     await _auth.signOut();
+    notifyListeners();
   }
 
   //getData

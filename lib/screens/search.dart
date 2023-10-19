@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 
 import '../constants/constant.dart';
+import '../services/unity_ads.dart';
 import 'single_quiz.dart';
 
 class SearchPage extends StatefulWidget {
@@ -96,8 +97,9 @@ class _SearchPageState extends State<SearchPage> {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(12)),
                     child: GestureDetector(
-                      onTap: (){
-                           Navigator.push(
+                      onTap: () {
+                        MyAds().showRewards();
+                        Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => SingleQuizScreen(
@@ -122,7 +124,7 @@ class _SearchPageState extends State<SearchPage> {
                                 fontSize: 23,
                                 color: Color.fromARGB(255, 35, 0, 82)),
                           ),
-                    
+
                           const SizedBox(
                             height: 10,
                           ),
