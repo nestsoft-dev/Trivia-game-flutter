@@ -41,6 +41,7 @@ class _MessageScreenState extends State<MessageScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -68,30 +69,32 @@ class _MessageScreenState extends State<MessageScreen> {
             padding: const EdgeInsets.all(4.0),
             child: Row(
               children: [
-                Expanded(
-                    child: TextFormField(
-                  controller: messageController,
-                  obscureText: false,
-                  maxLength: 45,
-                  keyboardType: TextInputType.name,
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: const Color.fromARGB(169, 214, 214, 214),
-                    hintText: 'Enter Message',
-                    border: OutlineInputBorder(
-                        borderSide: BorderSide(color: defaultButton, width: 2),
-                        borderRadius: BorderRadius.circular(12)),
-                    suffixIcon: GestureDetector(
-                      onTap: () {
-                        _sendMessage(messageController.text);
-                      },
-                      child: Icon(
-                        Icons.send,
-                        color: defaultButton,
+                Flexible(
+                  child: TextFormField(
+                    controller: messageController,
+                    obscureText: false,
+                    maxLength: 45,
+                    keyboardType: TextInputType.name,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: const Color.fromARGB(169, 214, 214, 214),
+                      hintText: 'Enter Message',
+                      border: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: defaultButton, width: 2),
+                          borderRadius: BorderRadius.circular(12)),
+                      suffixIcon: GestureDetector(
+                        onTap: () {
+                          _sendMessage(messageController.text);
+                        },
+                        child: Icon(
+                          Icons.send,
+                          color: defaultButton,
+                        ),
                       ),
                     ),
                   ),
-                )),
+                ),
                 //  IconButton(onPressed: (){}, icon: Icon(Icons.send))
               ],
             ),
@@ -114,17 +117,19 @@ class _MessageScreenState extends State<MessageScreen> {
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return Text('Error');
+            return const Text('Error');
           } else if (snapshot.hasData) {
             final userList = snapshot.data!.docs;
             return Padding(
               padding: const EdgeInsets.all(8.0),
-              child: ListView(
+              child:
+                  //  ListView.builder(itemBuilder: (context, index){}),
+                  ListView(
                 children: userList.map((e) => messageItem(e)).toList(),
               ),
             );
           } else {
-            return MyShrimmer();
+            return const MyShrimmer();
           }
         });
   }

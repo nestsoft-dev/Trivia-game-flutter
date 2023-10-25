@@ -5,6 +5,7 @@ import 'package:rxdart/rxdart.dart';
 import '../screens/bottom_nav.dart';
 import '../widgets/my_shrimmer.dart';
 import 'login.dart';
+import 'onboarding_screen.dart';
 
 class AuthGate extends StatefulWidget {
   const AuthGate({super.key});
@@ -31,7 +32,7 @@ class _AuthGateState extends State<AuthGate> {
               child: Text('Error occurred'),
             );
           } else {
-            return const RegisterPage();
+            return const OnBoardingScreen();
           }
         });
   }

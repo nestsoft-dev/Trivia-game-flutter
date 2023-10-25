@@ -7,7 +7,8 @@ import 'package:flutter_share/flutter_share.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:intl/intl.dart';
-import 'package:unity_ads_plugin/unity_ads_plugin.dart';
+
+import 'package:unity_mediation/unity_mediation.dart';
 import '../constants/constant.dart';
 import '../firebase/firebase_functions.dart';
 import '../model/user_model.dart';
@@ -109,15 +110,15 @@ class _HomePageState extends State<HomePage> {
   FirebaseFun _firebaseFun = FirebaseFun();
   @override
   void initState() {
-    //checkForUpdate();
+    checkForUpdate();
     greetings();
-    Timer(const Duration(seconds: 5), () {
+  //  Timer(const Duration(seconds: 5), () {
       _ratingService.isSecondTimeOpen().then((value) {
         if (value) {
           _ratingService.showRating();
         }
       });
-    });
+    // });
 
     super.initState();
   }
@@ -350,9 +351,14 @@ class _HomePageState extends State<HomePage> {
                     ),
 
                     // const Spacer(),
-                    const UnityBannerAd(
-                      placementId: 'Banner_Android',
+                     BannerAd(
+                      adUnitId: 'Banner_Android',
+                      onLoad: (adUnitId) => print('Banner loaded: $adUnitId'),
+                      onClick: (adUnitId) => print('Banner clicked: $adUnitId'),
+                      onFailed: (adUnitId, error, message) =>
+                          print('Banner Ad $adUnitId failed: $error $message'),
                     ),
+                  
                     const SizedBox(
                       height: 40,
                     ),

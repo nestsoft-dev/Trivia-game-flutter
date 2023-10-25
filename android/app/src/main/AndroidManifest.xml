@@ -14,6 +14,9 @@
         android:label="Altris"
         android:name="${applicationName}"
         android:icon="@drawable/altris_icon">
+          <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-6987059332386190~1532465750"/>
      
         <activity
             android:name=".MainActivity"
