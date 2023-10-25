@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 final String API_KEY = 'ALOC-de08837978fd45c30861';
+String amazon = 'assets/amazon.png';
+String apple = 'assets/apple.jpg';
+String paypal = 'assets/paypal.png';
 
 final Color defaultButton = Colors.deepPurple;
 final Color lighBg = Color.fromARGB(143, 229, 213, 255);
@@ -41,4 +44,15 @@ List<Map<String, dynamic>> onBoardingList = [
     'image': 'assets/learnwithfrnd.png',
     'des': 'Get paid while you have fun with friends'
   },
+];
+
+List<Map<String, dynamic>> rewardsList = [
+  {'cardName': 'Amazon', 'amount': 10, 'image': amazon, 'points': 5120},
+  {'cardName': 'PayPal', 'amount': 5, 'image': paypal, 'points': 7350},
+  {'cardName': 'Apple', 'amount': 25, 'image': apple, 'points': 32350},
+  {'cardName': 'Amazon', 'amount': 15, 'image': amazon, 'points': 17260},
+  {'cardName': 'PayPal', 'amount': 30, 'image': paypal, 'points': 35150},
+  {'cardName': 'Apple', 'amount': 40, 'image': apple, 'points': 51350},
+  {'cardName': 'Amazon', 'amount': 50, 'image': amazon, 'points': 55328},
+
 ];

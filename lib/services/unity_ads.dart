@@ -1,22 +1,24 @@
-import 'package:unity_mediation/unity_mediation.dart';
+import 'package:unity_ads_plugin/unity_ads_plugin.dart';
 
 class MyAds {
   initAds() async {
-    await UnityMediation.initialize(
-      gameId: '5376898',
-      onComplete: () {
-        print('Initialization Complete');
-        MyAds().loadAdsInter();
-        MyAds().loadAdsReward();
-      },
-      onFailed: (error, message) =>
-          print('Initialization Failed: $error $message'),
-    );
+  await UnityAds.init(
+    gameId: '5376898',
+    testMode: false,
+    onComplete: () {
+      MyAds().loadAdsInter();
+      MyAds().loadAdsReward();
+
+      print('Ads is Loaded\n\n\n\nLoaded');
+    },
+    onFailed: (error, message) =>
+        print('Initialization Failed: $error $message \n\n\n failed'),
+  );
   }
 
   loadAdsInter() async {
-    UnityMediation.loadInterstitialAd(
-      adUnitId: 'Interstitial_Android',
+    UnityAds.load(
+      placementId: 'Interstitial_Android',
       onComplete: (adUnitId) {},
       onFailed: (adUnitId, error, message) =>
           print('Interstitial Ad Load Failed $adUnitId: $error $message'),
@@ -24,8 +26,8 @@ class MyAds {
   }
 
   loadAdsReward() async {
-    UnityMediation.loadRewardedAd(
-      adUnitId: 'Rewarded_Android',
+    UnityAds.load(
+      placementId: 'Rewarded_Android',
       onComplete: (adUnitId) {
         print('Rewarded Ad Load Complete $adUnitId');
       },
@@ -35,13 +37,13 @@ class MyAds {
   }
 
   showInter() {
-     UnityMediation.showInterstitialAd(
-      adUnitId: 'Interstitial_Android',
+     UnityAds.showVideoAd(
+      placementId: 'Interstitial_Android',
       onFailed: (adUnitId, error, message) =>
         loadAdsInter(),
       onStart: (adUnitId) => loadAdsInter(),
       onClick: (adUnitId) => loadAdsInter(),
-      onClosed: (adUnitId) {
+      onComplete: (adUnitId) {
         
        loadAdsInter();
       },
@@ -51,18 +53,15 @@ class MyAds {
   }
 
   showRewards() {
-    UnityMediation.showRewardedAd(
-      adUnitId: 'Rewarded_Android',
+    UnityAds.showVideoAd(
+      placementId: 'Rewarded_Android',
       onFailed: (adUnitId, error, message) =>
          loadAdsReward(),
       onStart: (adUnitId) => loadAdsReward(),
       onClick: (adUnitId) => loadAdsReward(),
-      onRewarded: (adUnitId, reward) =>
+      onComplete: ( reward) =>
           loadAdsReward(),
-      onClosed: (adUnitId) {
-        print('Rewarded Ad $adUnitId closed');
-        loadAdsReward();
-      },
+    
     );
 
   

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class AdManager {
   static String get gameId {
     if (defaultTargetPlatform == TargetPlatform.android) {
-      return '5449339';
+      return '5376898';
     }
     if (defaultTargetPlatform == TargetPlatform.iOS) {
       return 'your_ios_game_id';

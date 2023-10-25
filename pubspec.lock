@@ -965,14 +965,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.2"
-  unity_mediation:
+  unity_ads_plugin:
     dependency: "direct main"
     description:
-      name: unity_mediation
-      sha256: a6c5db68ad7c3608e8975b0915e2bde5960ef5e46bf62bec1579554fb787086f
+      name: unity_ads_plugin
+      sha256: "75b0b87697a9601971eacd2cd37458b88cf88f062af6f21c67c9fb28a11699d9"
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.1"
+    version: "0.3.10"
   url_launcher:
     dependency: "direct main"
     description:

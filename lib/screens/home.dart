@@ -7,8 +7,8 @@ import 'package:flutter_share/flutter_share.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:intl/intl.dart';
+import 'package:unity_ads_plugin/unity_ads_plugin.dart';
 
-import 'package:unity_mediation/unity_mediation.dart';
 import '../constants/constant.dart';
 import '../firebase/firebase_functions.dart';
 import '../model/user_model.dart';
@@ -108,10 +108,16 @@ class _HomePageState extends State<HomePage> {
 
   final MyInAppReview _ratingService = MyInAppReview();
   FirebaseFun _firebaseFun = FirebaseFun();
+  // BannerAd? _bannerAd;
+  bool _isLoaded = false;
+  loadBanner(){
+    
+  }
   @override
   void initState() {
     checkForUpdate();
     greetings();
+    loadBanner();
   //  Timer(const Duration(seconds: 5), () {
       _ratingService.isSecondTimeOpen().then((value) {
         if (value) {
@@ -316,9 +322,9 @@ class _HomePageState extends State<HomePage> {
                       height: size.height * 0.27,
                       child: ListView.builder(
                           scrollDirection: Axis.horizontal,
-                          itemCount: 3,
+                          itemCount: 2,
                           itemBuilder: (context, index) {
-                            if (index == 0) {
+                            if (index == 3) {
                               return FadeOut(child: ChatBanner(size: size));
                             } else if (index == 1) {
                               return BounceInRight(
@@ -349,10 +355,11 @@ class _HomePageState extends State<HomePage> {
                             }
                           }),
                     ),
+                    
 
                     // const Spacer(),
-                     BannerAd(
-                      adUnitId: 'Banner_Android',
+                     UnityBannerAd(
+                      placementId: 'Banner_Android',
                       onLoad: (adUnitId) => print('Banner loaded: $adUnitId'),
                       onClick: (adUnitId) => print('Banner clicked: $adUnitId'),
                       onFailed: (adUnitId, error, message) =>

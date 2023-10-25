@@ -26,7 +26,7 @@ class _BottomNavState extends State<BottomNav> {
   List<Widget> _screen = const [
     const HomePage(),
     const SearchPage(),
-    const MyChats(),
+   // const MyChats(),
     const RedeemPoints(),
     const Profile()
   ];
@@ -58,7 +58,7 @@ class _BottomNavState extends State<BottomNav> {
               tabs: const [
                 GButton(icon: FontAwesomeIcons.homeUser, text: 'Home'),
                 GButton(icon: FontAwesomeIcons.search, text: 'Search'),
-                GButton(icon: FontAwesomeIcons.message, text: 'Chats'),
+              //  GButton(icon: FontAwesomeIcons.message, text: 'Chats'),
                 GButton(
                     icon: FontAwesomeIcons.moneyCheckDollar, text: 'Payment'),
                 GButton(icon: FontAwesomeIcons.userAstronaut, text: 'Profile')
