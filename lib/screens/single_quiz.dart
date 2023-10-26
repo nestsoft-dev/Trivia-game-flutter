@@ -41,11 +41,14 @@ class _SingleQuizScreenState extends State<SingleQuizScreen> {
   final CardSwiperController controller = CardSwiperController();
   String selectedOption = '';
 
+  PageController _pageController = PageController(initialPage: 0);
+
   @override
   void dispose() {
     controller.dispose();
     super.dispose();
     timer?.cancel();
+    _pageController.dispose();
   }
 
   bool _isLoading = true;
@@ -69,7 +72,7 @@ class _SingleQuizScreenState extends State<SingleQuizScreen> {
             questions = data['data'];
             _isLoading = false;
           });
-           startTimer();
+          startTimer();
 
           print('${data['data']}');
         }
@@ -90,11 +93,10 @@ class _SingleQuizScreenState extends State<SingleQuizScreen> {
 
   void _checkAnswer(String selectedOption) {
     if (questions[_currentPageIndex]['answer'] == selectedOption) {
-      print('correct');
       setState(() {
         _score += 10;
       });
-      print('correct $_score');
+
       print('${questions[_currentPageIndex]['answer']}');
     }
     _goToNextQuestion();
@@ -106,7 +108,8 @@ class _SingleQuizScreenState extends State<SingleQuizScreen> {
       setState(() {
         _currentPageIndex++;
       });
-      controller.swipe();
+      _pageController.animateToPage(_currentPageIndex,
+          duration: Duration(milliseconds: 300), curve: Curves.easeIn);
     } else {
 //submit
       int newP = points + _score;
@@ -166,7 +169,7 @@ class _SingleQuizScreenState extends State<SingleQuizScreen> {
   void initState() {
     super.initState();
     getQuestions();
-    startTimer();
+    //startTimer();
   }
 
   // void creditUser(PurchaseDetails purchaseDetails) async {
@@ -403,19 +406,19 @@ class _SingleQuizScreenState extends State<SingleQuizScreen> {
     await FirebaseFun().uploadPurchaseDiamond(newD);
   }
 
-  showPercent() {
-    if (_currentPageIndex != null &&
-        questions != null &&
-        questions.length != 0) {
-      percentValue = _currentPageIndex / questions.length;
-    } else {
-      percentValue = 1.0; // You can choose another default value if needed.
-    }
-    //debugPrint('${percentValue = currentIndex / questions.length}');
-    setState(() {
-      // percentValue = (currentIndex! / questions.length)! ?? 1;
-    });
-  }
+  // showPercent() {
+  //   if (_currentPageIndex != null &&
+  //       questions != null &&
+  //       questions.length != 0) {
+  //     percentValue = _currentPageIndex / questions.length;
+  //   } else {
+  //     percentValue = 1.0; // You can choose another default value if needed.
+  //   }
+  //   //debugPrint('${percentValue = currentIndex / questions.length}');
+  //   setState(() {
+  //     // percentValue = (currentIndex! / questions.length)! ?? 1;
+  //   });
+  // }
 
   String answer = '';
   // checkScore(String selectedOption, String optionKey) {
@@ -443,7 +446,6 @@ class _SingleQuizScreenState extends State<SingleQuizScreen> {
                     onComplete: (reward) => setState(() {
                       time += 3;
                     }),
-                  
                   );
                 },
                 child: Icon(
@@ -682,167 +684,148 @@ class _SingleQuizScreenState extends State<SingleQuizScreen> {
                     //   ]),
                     // );
                     return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 25,vertical: 30),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 25, vertical: 30),
                       child: PageView.builder(
                           itemCount: questions.length,
-                          controller:
-                              PageController(initialPage: _currentPageIndex),
+                          physics: const NeverScrollableScrollPhysics(),
+                          controller: _pageController,
                           onPageChanged: (int index) {
                             setState(() {
                               _currentPageIndex = index;
                             });
-                           // showPercent();
+                            // showPercent();
                           },
                           itemBuilder: (context, index) {
+                            double valueP = index / questions.length * 100;
                             return ListView(
                               children: [
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 15),
-                                  child: SizedBox(
-                                    height: 55,
-                                    width: size.width,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        //points gotten
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Container(
-                                              padding:
-                                                  const EdgeInsets.all(10),
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          12),
-                                                  color: Colors.yellowAccent
-                                                      .withOpacity(0.3)),
-                                              child: Text(
-                                                '$_score points',
-                                                textAlign: TextAlign.center,
-                                                style: GoogleFonts.poppins(
-                                                    fontWeight:
-                                                        FontWeight.w500,
-                                                    fontSize: 18,
-                                                    color: Color.fromARGB(
-                                                        255, 35, 0, 82)),
-                                              ),
-                                            ),
-                                            const SizedBox(width: 5),
-                                            usermodel.diamonds < 2
-                                                ? ElevatedButton(
-                                                    onPressed: () {
-                                                      MySnack(
-                                                          context,
-                                                          'Buying of Diamonds coming soon',
-                                                          Colors.deepPurple);
-                                                    },
-                                                    child: const Text(
-                                                        'Buy Diamonds'))
-                                                : GestureDetector(
-                                                    onTap: usermodel
-                                                                .diamonds <
-                                                            2
-                                                        ? () => MySnack(
-                                                            context,
-                                                            'Low on Diamonds',
-                                                            Colors.deepPurple)
-                                                        : () {
-                                                            showHint(
-                                                                diamonds);
-                                                            setState(() {
-                                                              answer = questions[
-                                                                      questionIndex]
-                                                                  ['answer'];
-                                                            });
-                                                          },
-                                                    child: Container(
-                                                      padding:
-                                                          const EdgeInsets
-                                                              .all(10),
-                                                      decoration: BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      12),
-                                                          color: Color(
-                                                                  0xFFE040FB)
-                                                              .withOpacity(
-                                                                  0.3)),
-                                                      child: Text(
-                                                        '🔔Hint💎-2',
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                        style: GoogleFonts
-                                                            .poppins(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                fontSize: 18,
-                                                                color: Color
-                                                                    .fromARGB(
-                                                                        255,
-                                                                        35,
-                                                                        0,
-                                                                        82)),
-                                                      ),
-                                                    ),
-                                                  ),
-                                          ],
-                                        ),
-
-                                        Container(
-                                          padding: const EdgeInsets.all(10),
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                              color: Colors.yellowAccent
-                                                  .withOpacity(0.3)),
-                                          child: Text(
-                                            '$time ⏰',
-                                            textAlign: TextAlign.center,
-                                            style: GoogleFonts.poppins(
-                                                fontWeight: FontWeight.w500,
-                                                fontSize: 18,
-                                                color: Color.fromARGB(
-                                                    255, 35, 0, 82)),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                                // const SizedBox(
+                                //   height: 20,
+                                // ),
+                                SizedBox(
+                                  height: 55,
+                                  width: size.width,
                                   child: Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      questions[index][''] != ''
-                                          ? Flexible(
-                                              child: Text(
-                                                'Section: ${questions[index]['section']}',
-                                                style: GoogleFonts.poppins(
-                                                    color: Colors.white,
-                                                    fontSize: 16),
-                                              ),
-                                            )
-                                          : const SizedBox.shrink(),
+                                      //points gotten
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Container(
+                                            padding: const EdgeInsets.all(10),
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                                color: Colors.yellowAccent
+                                                    .withOpacity(0.3)),
+                                            child: Text(
+                                              '$_score points',
+                                              textAlign: TextAlign.center,
+                                              style: GoogleFonts.poppins(
+                                                  fontWeight: FontWeight.w500,
+                                                  fontSize: 18,
+                                                  color: Color.fromARGB(
+                                                      255, 35, 0, 82)),
+                                            ),
+                                          ),
+                                          const SizedBox(width: 5),
+                                          usermodel.diamonds < 2
+                                              ? ElevatedButton(
+                                                  onPressed: () {
+                                                    MySnack(
+                                                        context,
+                                                        'Buying of Diamonds coming soon',
+                                                        Colors.deepPurple);
+                                                  },
+                                                  child: const Text(
+                                                      'Buy Diamonds'))
+                                              : GestureDetector(
+                                                  onTap: usermodel.diamonds < 2
+                                                      ? () => MySnack(
+                                                          context,
+                                                          'Low on Diamonds',
+                                                          Colors.deepPurple)
+                                                      : () {
+                                                          showHint(diamonds);
+                                                          setState(() {
+                                                            answer = questions[
+                                                                    questionIndex]
+                                                                ['answer'];
+                                                          });
+                                                        },
+                                                  child: Container(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            10),
+                                                    decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(12),
+                                                        color: Color(0xFFE040FB)
+                                                            .withOpacity(0.3)),
+                                                    child: Text(
+                                                      '🔔Hint💎-2',
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style:
+                                                          GoogleFonts.poppins(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                              fontSize: 18,
+                                                              color: Color
+                                                                  .fromARGB(
+                                                                      255,
+                                                                      35,
+                                                                      0,
+                                                                      82)),
+                                                    ),
+                                                  ),
+                                                ),
+                                        ],
+                                      ),
+
+                                      Container(
+                                        padding: const EdgeInsets.all(10),
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                            color: Colors.yellowAccent
+                                                .withOpacity(0.3)),
+                                        child: Text(
+                                          '$time⏰',
+                                          textAlign: TextAlign.center,
+                                          style: GoogleFonts.poppins(
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 18,
+                                              color: Color.fromARGB(
+                                                  255, 35, 0, 82)),
+                                        ),
+                                      ),
                                     ],
                                   ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: questions[index][''] != ''
+                                      ? Text(
+                                          'Section: ${questions[index]['section']}',
+                                          style: GoogleFonts.poppins(
+                                              color: Colors.white,
+                                              fontSize: 15),
+                                        )
+                                      : const SizedBox.shrink(),
                                 ),
                                 const SizedBox(
                                   height: 15,
                                 ),
                                 Padding(
-                                  padding:
-                                      EdgeInsets.symmetric(horizontal: 20),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 20),
                                   child: BounceInUp(
                                     delay: Duration(milliseconds: 700),
                                     child: Container(
@@ -851,9 +834,9 @@ class _SingleQuizScreenState extends State<SingleQuizScreen> {
                                           borderRadius:
                                               BorderRadius.circular(12),
                                           color: defaultButton,
-                                          boxShadow: [
+                                          boxShadow: const [
                                             BoxShadow(
-                                              color: const Color.fromARGB(
+                                              color: Color.fromARGB(
                                                   255, 224, 224, 224),
                                               offset: Offset(4, 4),
                                               blurRadius: 10,
@@ -912,7 +895,7 @@ class _SingleQuizScreenState extends State<SingleQuizScreen> {
                                         ),
                                       ),
                                       Text(
-                                        '${index + 1}/40',
+                                        '${index + 1}/${questions.length}',
                                         style: const TextStyle(
                                             color: Colors.white,
                                             fontSize: 18,
@@ -934,8 +917,8 @@ class _SingleQuizScreenState extends State<SingleQuizScreen> {
                                         .map<Widget>(
                                       (option) {
                                         return FadeIn(
-                                          delay: const Duration(
-                                              milliseconds: 300),
+                                          delay:
+                                              const Duration(milliseconds: 300),
                                           child: Container(
                                             // height: 50,
                                             margin: const EdgeInsets.only(
@@ -967,8 +950,7 @@ class _SingleQuizScreenState extends State<SingleQuizScreen> {
                                                 option.value,
                                                 style: GoogleFonts.poppins(
                                                     color: Colors.white,
-                                                    fontWeight:
-                                                        FontWeight.bold,
+                                                    fontWeight: FontWeight.bold,
                                                     fontSize: 16),
                                               ),
                                               value: option.key,
@@ -980,6 +962,7 @@ class _SingleQuizScreenState extends State<SingleQuizScreen> {
                                                   selectedOption =
                                                       value as String;
                                                 });
+                                                _checkAnswer(selectedOption);
                                               },
                                             ),
                                           ),
@@ -994,32 +977,27 @@ class _SingleQuizScreenState extends State<SingleQuizScreen> {
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 25),
-                                  child: Flexible(
-                                    child: LinearPercentIndicator(
-                                      width:
-                                          MediaQuery.of(context).size.width *
-                                              0.75,
-                                      animation: true,
-                                      animateFromLastPercent: true,
-                                      lineHeight: 25.0,
-                                      animationDuration: 2500,
-                                      percent: index / questions.length,
-                                      barRadius: Radius.circular(30),
-                                      center: Text(
-                                        "${index / questions.length * 100}%",
-                                        style: GoogleFonts.mochiyPopOne(
-                                            fontSize: 18,
-                                            color: Colors.white),
-                                      ),
-                                      linearStrokeCap:
-                                          LinearStrokeCap.roundAll,
-                                      progressColor:
-                                          index / questions.length < 0.5
-                                              ? Colors.yellow
-                                              : percentValue > 0.8
-                                                  ? defaultButton
-                                                  : Colors.green,
+                                  child: LinearPercentIndicator(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.65,
+                                    animation: true,
+                                    animateFromLastPercent: true,
+                                    lineHeight: 25.0,
+                                    animationDuration: 2500,
+                                    percent: index / questions.length,
+                                    barRadius: Radius.circular(30),
+                                    center: Text(
+                                      "${valueP.toStringAsFixed(2)}%",
+                                      style: GoogleFonts.mochiyPopOne(
+                                          fontSize: 18, color: Colors.white),
                                     ),
+                                    linearStrokeCap: LinearStrokeCap.roundAll,
+                                    progressColor:
+                                        index / questions.length < 0.5
+                                            ? Colors.yellow
+                                            : percentValue > 0.8
+                                                ? defaultButton
+                                                : Colors.green,
                                   ),
                                 ),
                                 const SizedBox(

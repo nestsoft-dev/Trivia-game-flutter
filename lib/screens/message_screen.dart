@@ -60,7 +60,7 @@ class _MessageScreenState extends State<MessageScreen> {
       body: Column(
         children: [
           //chat List(
-          Flexible(
+          Expanded(
             child: messageList(),
           ),
 
@@ -161,10 +161,8 @@ class _MessageScreenState extends State<MessageScreen> {
                           bottomRight: Radius.circular(15.0),
                           topLeft: Radius.circular(15.0),
                         )),
-              child: Flexible(
-                child: Text('${data['message']}',
-                    style: const TextStyle(color: Colors.white)),
-              ),
+              child: Text('${data['message']}',
+                  style: const TextStyle(color: Colors.white)),
             ),
           )
         ],

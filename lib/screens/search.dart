@@ -25,7 +25,6 @@ class _SearchPageState extends State<SearchPage> {
     'Chemistry',
     'Biology',
     'Geography',
-
     'CRK',
     'IRS',
   ];
@@ -103,7 +102,8 @@ class _SearchPageState extends State<SearchPage> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => SingleQuizScreen(
-                                      subject: 'english',
+                                      subject:
+                                          subjectNames[index].toLowerCase(),
                                     )));
                       },
                       child: Column(

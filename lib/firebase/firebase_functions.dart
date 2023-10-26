@@ -77,47 +77,7 @@ class FirebaseFun extends ChangeNotifier {
   //register
   Future<void> register(
       BuildContext context, String name, String email, String password) async {
-    // try {
-    //   //  await generateReferralCode();
-    // final String characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    // String code = '';
-    // final Random random = Random();
-
-    // for (int i = 0; i < 7; i++) {
-    //   code += characters[random.nextInt(characters.length)];
-    // }
-
-    // UserModel userModel = UserModel(
-    //     name: name,
-    //     point: 0,
-    //     diamonds: 10,
-    //     userImage: imageUrl,
-    //     email: email,
-    //     referralCode: code,
-    //     uid: _auth.currentUser!.uid);
-    // UserCredential userCredential = await _auth
-    //     .createUserWithEmailAndPassword(email: email, password: password);
-    // await firebaseFirestore
-    //     .collection('users')
-    //     .doc(_auth.currentUser!.uid)
-    //     .set(userModel.toMap())
-    //     .then((value) {
-    //   Navigator.pushAndRemoveUntil(
-    //       context,
-    //       MaterialPageRoute(builder: (context) => BottomNav()),
-    //       (route) => false);
-    // });
-    // } on FirebaseAuthException catch (err) {
-    //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-    //     content: Text(e.toString()),
-    //     backgroundColor: Colors.red,
-    //   ));
-    // } catch (e) {
-    //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-    //     content: Text(e.toString()),
-    //     backgroundColor: Colors.red,
-    //   ));
-    // }
+   
     try {
       UserCredential? userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(
@@ -143,7 +103,7 @@ class FirebaseFun extends ChangeNotifier {
         await firebaseFirestore
             .collection('users')
             .doc(_auth.currentUser!.uid)
-            .set(userModel.toMap());
+            .set(userModel.toMap()).then((value) => MySnack(context, 'Account Created, Login', Colors.green));
       });
 
       if (userCredential != null) {

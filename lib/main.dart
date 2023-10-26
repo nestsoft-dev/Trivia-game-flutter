@@ -1,9 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:onepref/onepref.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:unity_ads_plugin/unity_ads_plugin.dart';
 import 'firebase/firebase_functions.dart';
+import 'firebase/firebase_notify.dart';
 import 'pages/splash.dart';
 import 'services/unity_ads.dart';
 
@@ -13,7 +16,7 @@ void main() async {
   await Firebase.initializeApp(
       //options: DefaultFirebaseOptions{},
       );
-       //initUnityMediation();
+  //initUnityMediation();
   await OnePref.init();
   await UnityAds.init(
     gameId: '5376898',
@@ -27,9 +30,58 @@ void main() async {
     onFailed: (error, message) =>
         print('Initialization Failed: $error $message \n\n\n failed'),
   );
+  await requestPermissions();
 
   runApp(ChangeNotifierProvider(
       create: (context) => FirebaseFun(), child: const MyApp()));
+}
+
+requestPermissions() async {
+  var status = await Permission.notification.status;
+  if (status.isDenied) {
+    PermissionStatus result = await Permission.notification.request();
+    if (status.isGranted) {
+      showNotifications();
+    }
+  } else if (status.isGranted) {
+    showNotifications();
+  } else {
+    openAppSettings();
+  }
+}
+
+showNotifications() async {
+  await FCMService().initNotification();
+
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+  flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()!
+      .requestNotificationsPermission();
+
+  const AndroidInitializationSettings initializationSettingsAndroid =
+      AndroidInitializationSettings('bell');
+  const AndroidNotificationDetails androidNotificationDetails =
+      AndroidNotificationDetails('home', 'altris nmain page',
+          channelDescription: 'Earn GiftCards',
+          playSound: true,
+          enableVibration: true,
+          priority: Priority.high);
+  const NotificationDetails notificationDetails =
+      NotificationDetails(android: androidNotificationDetails);
+  await flutterLocalNotificationsPlugin.periodicallyShow(
+      0,
+      'We miss you',
+      'Open the Altris App today for more offers',
+      RepeatInterval.hourly,
+      notificationDetails,
+      androidAllowWhileIdle: true);
+  flutterLocalNotificationsPlugin.initialize(
+      InitializationSettings(
+        android: initializationSettingsAndroid,
+      ),
+      onDidReceiveNotificationResponse: (val) {});
 }
 
 Future<void> initUnityMediation() async {
@@ -44,7 +96,7 @@ Future<void> initUnityMediation() async {
   //     onFailed: (error, message) =>
   //         print('Initialization Failed: $error $message'),
   //   );
-  }
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

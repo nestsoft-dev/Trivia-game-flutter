@@ -126,6 +126,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   _password.text)
                               .then((value) {
                             setState(() {
+                             
                               _isAnimated = false;
                             });
                           });

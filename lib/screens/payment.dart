@@ -84,83 +84,83 @@ class _RedeemPointsState extends State<RedeemPoints> {
                                   mainAxisSpacing: 5,
                                   crossAxisSpacing: 5),
                           itemCount: rewardsList.length,
-                          itemBuilder: (context, index) => GestureDetector(
-                                onTap: rewardsList[index]['points'] <
-                                        userModel.diamonds
-                                    ? () {}
-                                    : () => MySnack(
-                                        context, 'Low points', Colors.red),
-                                child: Container(
-                                  height: 200,
-                                  decoration: BoxDecoration(
-                                      color: Colors.grey[350],
-                                      borderRadius: BorderRadius.circular(12)),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      ClipRRect(
-                                        borderRadius: const BorderRadius.only(
-                                            topLeft: Radius.circular(12),
-                                            topRight: Radius.circular(12)),
-                                        child: Image.asset(
-                                          rewardsList[index]['image'],
-                                          height: 120,
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        height: 5,
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(left: 5),
-                                        child: Text(
-                                            '${rewardsList[index]['cardName']} GiftCard'),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(left: 5),
-                                        child: Text(
-                                            '${rewardsList[index]['amount']}\$',
-                                            style: GoogleFonts.mochiyPopOne(
-                                                fontSize: 16)),
-                                      ),
-                                      LinearPercentIndicator(
+                          itemBuilder: (context, index) {
+                            double valueP = userModel.point /
+                                rewardsList[index]['points'] *
+                                100;
+                            return GestureDetector(
+                              onTap: rewardsList[index]['points'] <
+                                      userModel.diamonds
+                                  ? () {}
+                                  : () => MySnack(
+                                      context, 'Low points', Colors.red),
+                              child: Container(
+                                height: 200,
+                                decoration: BoxDecoration(
+                                    color: Colors.grey[350],
+                                    borderRadius: BorderRadius.circular(12)),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: const BorderRadius.only(
+                                          topLeft: Radius.circular(12),
+                                          topRight: Radius.circular(12)),
+                                      child: Image.asset(
+                                        rewardsList[index]['image'],
+                                        height: 120,
                                         width:
-                                            MediaQuery.of(context).size.width *
-                                                0.47,
-                                        animation: true,
-                                        animateFromLastPercent: true,
-                                        lineHeight: 25.0,
-                                        animationDuration: 2500,
-                                        percent: userModel.point /
-                                            rewardsList[index]['points'],
-                                        barRadius: Radius.circular(30),
-                                        center: Text(
-                                          "${userModel.point / rewardsList[index]['points'] * 100}%",
-                                          style: GoogleFonts.mochiyPopOne(
-                                              fontSize: 18,
-                                              color: Colors.white),
-                                        ),
-                                        linearStrokeCap:
-                                            LinearStrokeCap.roundAll,
-                                        progressColor: userModel.point /
-                                                    rewardsList[index]
-                                                        ['points'] <
-                                                0.5
-                                            ? Colors.yellow
-                                            : userModel.point /
-                                                        rewardsList[index]
-                                                            ['points'] >
-                                                    0.8
-                                                ? defaultButton
-                                                : Colors.green,
+                                            MediaQuery.of(context).size.width,
+                                        fit: BoxFit.cover,
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 5),
+                                      child: Text(
+                                          '${rewardsList[index]['cardName']} GiftCard'),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 5),
+                                      child: Text(
+                                          '${rewardsList[index]['amount']}\$',
+                                          style: GoogleFonts.mochiyPopOne(
+                                              fontSize: 16)),
+                                    ),
+                                    LinearPercentIndicator(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.47,
+                                      animation: true,
+                                      animateFromLastPercent: true,
+                                      lineHeight: 25.0,
+                                      animationDuration: 2500,
+                                      percent: userModel.point /
+                                          rewardsList[index]['points'],
+                                      barRadius: Radius.circular(30),
+                                      center: Text(
+                                        "${valueP.toStringAsFixed(2)}%",
+                                        style: GoogleFonts.mochiyPopOne(
+                                            fontSize: 18, color: Colors.white),
+                                      ),
+                                      linearStrokeCap: LinearStrokeCap.roundAll,
+                                      progressColor: userModel.point /
+                                                  rewardsList[index]['points'] <
+                                              0.5
+                                          ? Colors.yellow
+                                          : userModel.point /
+                                                      rewardsList[index]
+                                                          ['points'] >
+                                                  0.8
+                                              ? defaultButton
+                                              : Colors.green,
+                                    ),
+                                  ],
                                 ),
-                              )),
+                              ),
+                            );
+                          }),
                     )
 
                     // Center(
