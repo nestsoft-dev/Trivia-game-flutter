@@ -77,7 +77,6 @@ class FirebaseFun extends ChangeNotifier {
   //register
   Future<void> register(
       BuildContext context, String name, String email, String password) async {
-   
     try {
       UserCredential? userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(
@@ -100,10 +99,13 @@ class FirebaseFun extends ChangeNotifier {
             email: email,
             referralCode: code,
             uid: _auth.currentUser!.uid);
+        _auth.currentUser!.sendEmailVerification();
         await firebaseFirestore
             .collection('users')
             .doc(_auth.currentUser!.uid)
-            .set(userModel.toMap()).then((value) => MySnack(context, 'Account Created, Login', Colors.green));
+            .set(userModel.toMap())
+            .then((value) =>
+                MySnack(context, 'Account Created, Login', Colors.green));
       });
 
       if (userCredential != null) {
@@ -184,6 +186,15 @@ class FirebaseFun extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> resetPassword(String email) async {
+    try {
+      _auth.sendPasswordResetEmail(email: email);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+    notifyListeners();
+  }
+
   //getData
   Stream<DocumentSnapshot> getuserData() {
     return firebaseFirestore
@@ -217,13 +228,13 @@ class FirebaseFun extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> scores(int points,int diamonds) async{
-    
+  Future<void> scores(int points, int diamonds) async {
     await firebaseFirestore
-          .collection('users')
-          .doc(_auth.currentUser!.uid).update({
-            'point':points,
-            'diamonds':diamonds,
-          });
+        .collection('users')
+        .doc(_auth.currentUser!.uid)
+        .update({
+      'point': points,
+      'diamonds': diamonds,
+    });
   }
 }

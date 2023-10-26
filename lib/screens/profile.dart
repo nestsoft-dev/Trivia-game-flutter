@@ -6,14 +6,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:trival_game/model/user_model.dart';
+import 'package:unity_ads_plugin/unity_ads_plugin.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../constants/constant.dart';
 import '../firebase/firebase_functions.dart';
 import '../pages/onboarding_screen.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:permission_handler/permission_handler.dart';
+import '../services/admob__ads.dart';
 import '../services/in_app_review.dart';
 import '../widgets/my_shrimmer.dart';
 import '../widgets/my_snack.dart';
@@ -96,6 +99,44 @@ class _ProfileState extends State<Profile> {
 
   bool _isUploading = false;
   MyInAppReview review = MyInAppReview();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    loadBanner();
+  }
+
+  BannerAd? _bannerAd;
+  bool _isLoaded = false;
+  loadBanner() {
+    _bannerAd = BannerAd(
+      adUnitId: AdmobAds.bannerId,
+      request: const AdRequest(),
+      size: AdSize.banner,
+      listener: BannerAdListener(
+        // Called when an ad is successfully received.
+        onAdLoaded: (ad) {
+          debugPrint('$ad loaded.');
+          setState(() {
+            _isLoaded = true;
+          });
+        },
+        // Called when an ad request failed.
+        onAdFailedToLoad: (ad, err) {
+          debugPrint('BannerAd failed to load: $err');
+          // Dispose the ad here to free resources.
+          ad.dispose();
+        },
+        // Called when an ad opens an overlay that covers the screen.
+        onAdOpened: (Ad ad) {},
+        // Called when an ad removes an overlay that covers the screen.
+        onAdClosed: (Ad ad) {},
+        // Called when an impression occurs on the ad.
+        onAdImpression: (Ad ad) {},
+      ),
+    )..load();
+  }
 
   final Uri _url = Uri.parse(
       'https://play.google.com/store/apps/details?id=com.netsoftdevelopers.trival_game');
@@ -290,6 +331,21 @@ class _ProfileState extends State<Profile> {
                     SizedBox(
                       height: size.height * 0.02,
                     ),
+                     _isLoaded
+                        ? SizedBox(
+                            width: _bannerAd!.size.width.toDouble(),
+                            height: _bannerAd!.size.height.toDouble(),
+                            child: AdWidget(ad: _bannerAd!),
+                          )
+                        : UnityBannerAd(
+                            placementId: 'Banner_Android',
+                            onLoad: (adUnitId) =>
+                                print('Banner loaded: $adUnitId'),
+                            onClick: (adUnitId) =>
+                                print('Banner clicked: $adUnitId'),
+                            onFailed: (adUnitId, error, message) => print(
+                                'Banner Ad $adUnitId failed: $error $message'),
+                          ),
                     ProfileSelect(
                       onTap: () => MySnack(context, 'Coming soon', Colors.red),
                       title: 'Follow us',

@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:intl/intl.dart';
 import 'package:unity_ads_plugin/unity_ads_plugin.dart';
@@ -12,6 +13,7 @@ import 'package:unity_ads_plugin/unity_ads_plugin.dart';
 import '../constants/constant.dart';
 import '../firebase/firebase_functions.dart';
 import '../model/user_model.dart';
+import '../services/admob__ads.dart';
 import '../services/in_app_review.dart';
 import '../widgets/chat_banner.dart';
 import '../widgets/home_banner.dart';
@@ -108,22 +110,48 @@ class _HomePageState extends State<HomePage> {
 
   final MyInAppReview _ratingService = MyInAppReview();
   FirebaseFun _firebaseFun = FirebaseFun();
-  // BannerAd? _bannerAd;
+  BannerAd? _bannerAd;
   bool _isLoaded = false;
-  loadBanner(){
-    
+  loadBanner() {
+    _bannerAd = BannerAd(
+      adUnitId: AdmobAds.bannerId,
+      request: const AdRequest(),
+      size: AdSize.banner,
+      listener: BannerAdListener(
+        // Called when an ad is successfully received.
+        onAdLoaded: (ad) {
+          debugPrint('$ad loaded.');
+          setState(() {
+            _isLoaded = true;
+          });
+        },
+        // Called when an ad request failed.
+        onAdFailedToLoad: (ad, err) {
+          debugPrint('BannerAd failed to load: $err');
+          // Dispose the ad here to free resources.
+          ad.dispose();
+        },
+        // Called when an ad opens an overlay that covers the screen.
+        onAdOpened: (Ad ad) {},
+        // Called when an ad removes an overlay that covers the screen.
+        onAdClosed: (Ad ad) {},
+        // Called when an impression occurs on the ad.
+        onAdImpression: (Ad ad) {},
+      ),
+    )..load();
   }
+
   @override
   void initState() {
     checkForUpdate();
     greetings();
     loadBanner();
-  //  Timer(const Duration(seconds: 5), () {
-      _ratingService.isSecondTimeOpen().then((value) {
-        if (value) {
-          _ratingService.showRating();
-        }
-      });
+    //  Timer(const Duration(seconds: 5), () {
+    _ratingService.isSecondTimeOpen().then((value) {
+      if (value) {
+        _ratingService.showRating();
+      }
+    });
     // });
 
     super.initState();
@@ -209,32 +237,35 @@ class _HomePageState extends State<HomePage> {
                                             )));
                                 break;
                               case 1:
-                                randomSubject = getRandomSubject(scienceSubjects);
+                                randomSubject =
+                                    getRandomSubject(scienceSubjects);
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => SingleQuizScreen(
-                                              subject: randomSubject.toLowerCase(),
+                                              subject:
+                                                  randomSubject.toLowerCase(),
                                             )));
                                 break;
-                                   case 2:
+                              case 2:
                                 randomSubject =
                                     getRandomSubject(commercialSubjects);
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => SingleQuizScreen(
-                                              subject: randomSubject.toLowerCase(),
+                                              subject:
+                                                  randomSubject.toLowerCase(),
                                             )));
                                 break;
-                                     case 3:
-                                randomSubject =
-                                    getRandomSubject(artSubjects);
+                              case 3:
+                                randomSubject = getRandomSubject(artSubjects);
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => SingleQuizScreen(
-                                              subject: randomSubject.toLowerCase(),
+                                              subject:
+                                                  randomSubject.toLowerCase(),
                                             )));
                                 break;
                               default:
@@ -324,7 +355,7 @@ class _HomePageState extends State<HomePage> {
                           scrollDirection: Axis.horizontal,
                           itemCount: 2,
                           itemBuilder: (context, index) {
-                            if (index == 3) {
+                            if (index == 0) {
                               return FadeOut(child: ChatBanner(size: size));
                             } else if (index == 1) {
                               return BounceInRight(
@@ -355,17 +386,24 @@ class _HomePageState extends State<HomePage> {
                             }
                           }),
                     ),
-                    
 
                     // const Spacer(),
-                     UnityBannerAd(
-                      placementId: 'Banner_Android',
-                      onLoad: (adUnitId) => print('Banner loaded: $adUnitId'),
-                      onClick: (adUnitId) => print('Banner clicked: $adUnitId'),
-                      onFailed: (adUnitId, error, message) =>
-                          print('Banner Ad $adUnitId failed: $error $message'),
-                    ),
-                  
+                    _isLoaded
+                        ? SizedBox(
+                            width: _bannerAd!.size.width.toDouble(),
+                            height: _bannerAd!.size.height.toDouble(),
+                            child: AdWidget(ad: _bannerAd!),
+                          )
+                        : UnityBannerAd(
+                            placementId: 'Banner_Android',
+                            onLoad: (adUnitId) =>
+                                print('Banner loaded: $adUnitId'),
+                            onClick: (adUnitId) =>
+                                print('Banner clicked: $adUnitId'),
+                            onFailed: (adUnitId, error, message) => print(
+                                'Banner Ad $adUnitId failed: $error $message'),
+                          ),
+
                     const SizedBox(
                       height: 40,
                     ),

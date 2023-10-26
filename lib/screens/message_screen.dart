@@ -3,12 +3,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:trival_game/constants/constant.dart';
 import 'package:trival_game/widgets/my_snack.dart';
 import 'package:trival_game/widgets/textinput.dart';
+import 'package:unity_ads_plugin/unity_ads_plugin.dart';
 
 import '../firebase/message_services.dart';
+import '../services/admob__ads.dart';
 import '../widgets/my_shrimmer.dart';
 
 class MessageScreen extends StatefulWidget {
@@ -36,7 +40,86 @@ class _MessageScreenState extends State<MessageScreen> {
     if (message.isNotEmpty) {
       messagesServices.sendMessage(widget.receiverUserid, message);
       messageController.clear();
+
+      calculateCount();
     }
+  }
+
+  int click = 0;
+  calculateCount() async {
+    click--;
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('counter', click!);
+    setState(() {});
+  }
+
+  loadCount() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final int? counter = prefs.getInt('counter') ?? 5;
+    setState(() {
+      click = counter!;
+    });
+  }
+
+  resetCounter() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('counter', 10);
+    loadCount();
+  }
+
+  bool _isRewardedLoaded = false;
+  RewardedAd? _rewardedAd;
+  loadRewardsAds() {
+    RewardedAd.load(
+        adUnitId: AdmobAds.rewarded,
+        request: const AdRequest(),
+        rewardedAdLoadCallback: RewardedAdLoadCallback(
+          // Called when an ad is successfully received.
+          onAdLoaded: (ad) {
+            setState(() {
+              _isRewardedLoaded = true;
+            });
+            ad.fullScreenContentCallback = FullScreenContentCallback(
+                // Called when the ad showed the full screen content.
+                onAdShowedFullScreenContent: (ad) {},
+                // Called when an impression occurs on the ad.
+                onAdImpression: (ad) {},
+                // Called when the ad failed to show full screen content.
+                onAdFailedToShowFullScreenContent: (ad, err) {
+                  // Dispose the ad here to free resources.
+                  ad.dispose();
+                },
+                // Called when the ad dismissed full screen content.
+                onAdDismissedFullScreenContent: (ad) {
+                  // Dispose the ad here to free resources.
+                  ad.dispose();
+                },
+                // Called when a click is recorded for an ad.
+                onAdClicked: (ad) {});
+
+            debugPrint('$ad loaded.');
+            // Keep a reference to the ad so you can show it later.
+            _rewardedAd = ad;
+          },
+          // Called when an ad request failed.
+          onAdFailedToLoad: (LoadAdError error) {
+            debugPrint('RewardedAd failed to load: $error');
+          },
+        ));
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    loadCount();
+  }
+
+  showAds() {
+    _rewardedAd!.show(onUserEarnedReward: (adview, reward) {
+      resetCounter();
+    });
+    MySnack(context, 'Show Ads', Colors.green);
   }
 
   @override
@@ -84,12 +167,36 @@ class _MessageScreenState extends State<MessageScreen> {
                               BorderSide(color: defaultButton, width: 2),
                           borderRadius: BorderRadius.circular(12)),
                       suffixIcon: GestureDetector(
-                        onTap: () {
-                          _sendMessage(messageController.text);
-                        },
-                        child: Icon(
-                          Icons.send,
-                          color: defaultButton,
+                        onTap: click < 0
+                            ? () {
+                                _isRewardedLoaded
+                                    ? showAds()
+                                    : UnityAds.showVideoAd(
+                                        placementId: 'Rewarded_Android',
+                                        onFailed: (adUnitId, error, message) {},
+                                        onStart: (adUnitId) {},
+                                        onClick: (adUnitId) {},
+                                        onComplete: (reward) => setState(() {
+                                          resetCounter();
+                                        }),
+                                      );
+                                ;
+                              }
+                            : () {
+                                _sendMessage(messageController.text);
+                              },
+                        child: Stack(
+                          children: [
+                            Icon(
+                             click < 0? FontAwesomeIcons.video :Icons.send,
+                              color: defaultButton,
+                            ),
+                            Center(
+                                child: Text(
+                              click.toString(),
+                              style: const TextStyle(color: Colors.white),
+                            ))
+                          ],
                         ),
                       ),
                     ),

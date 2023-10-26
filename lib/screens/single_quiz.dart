@@ -7,6 +7,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:http/http.dart' as http;
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:onepref/onepref.dart';
@@ -20,6 +21,7 @@ import 'package:unity_ads_plugin/unity_ads_plugin.dart';
 import '../constants/constant.dart';
 import '../model/question_model.dart';
 import '../model/user_model.dart';
+import '../services/admob__ads.dart';
 import '../services/unity_ads.dart';
 import '../widgets/my_shrimmer.dart';
 import '../widgets/my_snack.dart';
@@ -107,10 +109,13 @@ class _SingleQuizScreenState extends State<SingleQuizScreen> {
     if (_currentPageIndex < questions.length - 1) {
       setState(() {
         _currentPageIndex++;
+        selectedOption = '';
+        answer = '';
       });
       _pageController.animateToPage(_currentPageIndex,
           duration: Duration(milliseconds: 300), curve: Curves.easeIn);
     } else {
+      _interstitialAd!.show();
 //submit
       int newP = points + _score;
       int newD = diamonds < 30 ? 1 : 3;
@@ -129,6 +134,36 @@ class _SingleQuizScreenState extends State<SingleQuizScreen> {
 
   Timer? timer;
   int time = 0;
+  BannerAd? _bannerAd;
+  bool _isLoaded = false;
+  loadBanner() {
+    _bannerAd = BannerAd(
+      adUnitId: AdmobAds.bannerId,
+      request: const AdRequest(),
+      size: AdSize.banner,
+      listener: BannerAdListener(
+        // Called when an ad is successfully received.
+        onAdLoaded: (ad) {
+          debugPrint('$ad loaded.');
+          setState(() {
+            _isLoaded = true;
+          });
+        },
+        // Called when an ad request failed.
+        onAdFailedToLoad: (ad, err) {
+          debugPrint('BannerAd failed to load: $err');
+          // Dispose the ad here to free resources.
+          ad.dispose();
+        },
+        // Called when an ad opens an overlay that covers the screen.
+        onAdOpened: (Ad ad) {},
+        // Called when an ad removes an overlay that covers the screen.
+        onAdClosed: (Ad ad) {},
+        // Called when an impression occurs on the ad.
+        onAdImpression: (Ad ad) {},
+      ),
+    )..load();
+  }
 
   startTimer() {
     time = 10;
@@ -169,7 +204,88 @@ class _SingleQuizScreenState extends State<SingleQuizScreen> {
   void initState() {
     super.initState();
     getQuestions();
+    loadBanner();
+    loadAdInter();
+    loadRewardsAds();
     //startTimer();
+  }
+
+  RewardedAd? _rewardedAd;
+  loadRewardsAds() {
+    RewardedAd.load(
+        adUnitId: AdmobAds.rewarded,
+        request: const AdRequest(),
+        rewardedAdLoadCallback: RewardedAdLoadCallback(
+          // Called when an ad is successfully received.
+          onAdLoaded: (ad) {
+            setState(() {
+              _isRewardedLoaded = true;
+            });
+            ad.fullScreenContentCallback = FullScreenContentCallback(
+                // Called when the ad showed the full screen content.
+                onAdShowedFullScreenContent: (ad) {},
+                // Called when an impression occurs on the ad.
+                onAdImpression: (ad) {},
+                // Called when the ad failed to show full screen content.
+                onAdFailedToShowFullScreenContent: (ad, err) {
+                  // Dispose the ad here to free resources.
+                  ad.dispose();
+                },
+                // Called when the ad dismissed full screen content.
+                onAdDismissedFullScreenContent: (ad) {
+                  // Dispose the ad here to free resources.
+                  ad.dispose();
+                },
+                // Called when a click is recorded for an ad.
+                onAdClicked: (ad) {});
+
+            debugPrint('$ad loaded.');
+            // Keep a reference to the ad so you can show it later.
+            _rewardedAd = ad;
+          },
+          // Called when an ad request failed.
+          onAdFailedToLoad: (LoadAdError error) {
+            debugPrint('RewardedAd failed to load: $error');
+          },
+        ));
+  }
+
+  bool _isRewardedLoaded = false;
+  InterstitialAd? _interstitialAd;
+  void loadAdInter() {
+    InterstitialAd.load(
+        adUnitId: AdmobAds.inter,
+        request: const AdRequest(),
+        adLoadCallback: InterstitialAdLoadCallback(
+          // Called when an ad is successfully received.
+          onAdLoaded: (ad) {
+            ad.fullScreenContentCallback = FullScreenContentCallback(
+                // Called when the ad showed the full screen content.
+                onAdShowedFullScreenContent: (ad) {},
+                // Called when an impression occurs on the ad.
+                onAdImpression: (ad) {},
+                // Called when the ad failed to show full screen content.
+                onAdFailedToShowFullScreenContent: (ad, err) {
+                  // Dispose the ad here to free resources.
+                  ad.dispose();
+                },
+                // Called when the ad dismissed full screen content.
+                onAdDismissedFullScreenContent: (ad) {
+                  // Dispose the ad here to free resources.
+                  ad.dispose();
+                },
+                // Called when a click is recorded for an ad.
+                onAdClicked: (ad) {});
+
+            debugPrint('$ad loaded.');
+            // Keep a reference to the ad so you can show it later.
+            _interstitialAd = ad;
+          },
+          // Called when an ad request failed.
+          onAdFailedToLoad: (LoadAdError error) {
+            debugPrint('InterstitialAd failed to load: $error');
+          },
+        ));
   }
 
   // void creditUser(PurchaseDetails purchaseDetails) async {
@@ -437,17 +553,25 @@ class _SingleQuizScreenState extends State<SingleQuizScreen> {
     return Scaffold(
         floatingActionButton: time < 5
             ? FloatingActionButton(
-                onPressed: () async {
-                  UnityAds.showVideoAd(
-                    placementId: 'Rewarded_Android',
-                    onFailed: (adUnitId, error, message) {},
-                    onStart: (adUnitId) {},
-                    onClick: (adUnitId) {},
-                    onComplete: (reward) => setState(() {
-                      time += 3;
-                    }),
-                  );
-                },
+                onPressed: _isRewardedLoaded
+                    ? () {
+                        _rewardedAd!.show(onUserEarnedReward: (adview, reward) {
+                          setState(() {
+                            time += 3;
+                          });
+                        });
+                      }
+                    : () async {
+                        UnityAds.showVideoAd(
+                          placementId: 'Rewarded_Android',
+                          onFailed: (adUnitId, error, message) {},
+                          onStart: (adUnitId) {},
+                          onClick: (adUnitId) {},
+                          onComplete: (reward) => setState(() {
+                            time += 3;
+                          }),
+                        );
+                      },
                 child: Icon(
                   Icons.video_call,
                   color: Colors.yellow[700],
@@ -1000,6 +1124,24 @@ class _SingleQuizScreenState extends State<SingleQuizScreen> {
                                                 : Colors.green,
                                   ),
                                 ),
+
+                                _isLoaded
+                                    ? SizedBox(
+                                        width: _bannerAd!.size.width.toDouble(),
+                                        height:
+                                            _bannerAd!.size.height.toDouble(),
+                                        child: AdWidget(ad: _bannerAd!),
+                                      )
+                                    : UnityBannerAd(
+                                        placementId: 'Banner_Android',
+                                        onLoad: (adUnitId) =>
+                                            print('Banner loaded: $adUnitId'),
+                                        onClick: (adUnitId) =>
+                                            print('Banner clicked: $adUnitId'),
+                                        onFailed: (adUnitId, error, message) =>
+                                            print(
+                                                'Banner Ad $adUnitId failed: $error $message'),
+                                      ),
                                 const SizedBox(
                                   height: 15,
                                 ),

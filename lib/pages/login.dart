@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:auth_buttons/auth_buttons.dart';
 import 'package:provider/provider.dart';
+import 'package:trival_game/widgets/my_snack.dart';
 import '../constants/constant.dart';
 import '../firebase/firebase_functions.dart';
 import '../screens/bottom_nav.dart';
@@ -78,7 +79,22 @@ class _LoginPageState extends State<LoginPage> {
               padding: const EdgeInsets.all(10),
               child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                 TextButton(
-                    onPressed: () {}, child: const Text('Forget Password?'))
+                    onPressed: () {
+                      if (_email.text.isEmpty) {
+                        MySnack(context, 'Email is required', Colors.red);
+                      } else {
+                          setState(() {
+                          _isAnimated = true;
+                        });
+                        final firebaseFun =
+                            Provider.of<FirebaseFun>(context, listen: false);
+                        firebaseFun.resetPassword(_email.text.trim()).then((value) => MySnack(context, 'Check Email Box', Colors.green));
+                          setState(() {
+                          _isAnimated = false;
+                        });
+                      }
+                    },
+                    child: const Text('Forget Password?'))
               ]),
             ),
             const SizedBox(
