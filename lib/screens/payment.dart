@@ -9,6 +9,7 @@ import 'package:trival_game/model/user_model.dart';
 import '../constants/constant.dart';
 import '../widgets/my_shrimmer.dart';
 import '../widgets/my_snack.dart';
+import 'withdrawal_screen.dart';
 
 class RedeemPoints extends StatefulWidget {
   const RedeemPoints({super.key});
@@ -91,7 +92,17 @@ class _RedeemPointsState extends State<RedeemPoints> {
                             return GestureDetector(
                               onTap: rewardsList[index]['points'] <
                                       userModel.diamonds
-                                  ? () {}
+                                  ? () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  WithdrawalScreen(
+                                                    points: rewardsList[index]
+                                                        ['points'],
+                                                    paymentType: 'paypal',
+                                                  )));
+                                    }
                                   : () => MySnack(
                                       context, 'Low points', Colors.red),
                               child: Container(
@@ -110,7 +121,8 @@ class _RedeemPointsState extends State<RedeemPoints> {
                                         rewardsList[index]['image'],
                                         height: 120,
                                         width:
-                                            MediaQuery.of(context).size.width,
+                                            MediaQuery.of(context).size.width *
+                                                0.40,
                                         fit: BoxFit.cover,
                                       ),
                                     ),
@@ -137,7 +149,8 @@ class _RedeemPointsState extends State<RedeemPoints> {
                                       lineHeight: 25.0,
                                       animationDuration: 2500,
                                       percent: userModel.point /
-                                          rewardsList[index]['points'],
+                                          rewardsList[index]['points'] *
+                                          0.001,
                                       barRadius: Radius.circular(30),
                                       center: Text(
                                         "${valueP.toStringAsFixed(2)}%",

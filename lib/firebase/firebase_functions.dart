@@ -109,27 +109,7 @@ class FirebaseFun extends ChangeNotifier {
       });
 
       if (userCredential != null) {
-        // UserModel userModel = UserModel(
-        //     name: name,
-        //     point: 0,
-        //     diamonds: 10,
-        //     userImage: imageUrl,
-        //     email: email,
-        //     referralCode: code,
-        //     uid: _auth.currentUser!.uid);
-        // UserCredential userCredential = await _auth
-        //     .createUserWithEmailAndPassword(email: email, password: password);
-        // await firebaseFirestore
-        //     .collection('users')
-        //     .doc(_auth.currentUser!.uid)
-        //     .set(userModel.toMap())
-        //     .then((value) {
-        //   // Navigator.pushAndRemoveUntil(
-        //   //     context,
-        //   //     MaterialPageRoute(builder: (context) => BottomNav()),
-        //   //     (route) => false);
-        // });
-        // User creation was successful
+     
         User? user = userCredential.user;
         if (user != null) {
         } else {
@@ -150,12 +130,6 @@ class FirebaseFun extends ChangeNotifier {
       }
     }
 
-//  catch (e) {
-//       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-//         content: Text(e.toString()),
-//         backgroundColor: Colors.red,
-//       ));
-//     }
   }
 
   //login
@@ -225,6 +199,14 @@ class FirebaseFun extends ChangeNotifier {
     } catch (e) {
       throw Exception(e.toString());
     }
+    notifyListeners();
+  }
+
+   Future<void> uploadPoints(int points) async {
+    await firebaseFirestore
+        .collection('users')
+        .doc(_auth.currentUser!.uid)
+        .update({'point': points});
     notifyListeners();
   }
 

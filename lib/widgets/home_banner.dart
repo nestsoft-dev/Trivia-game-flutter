@@ -3,17 +3,19 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:avatar_glow/avatar_glow.dart';
+import 'package:flutter/material.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:in_app_purchase_android/in_app_purchase_android.dart';
-import 'package:flutter/material.dart';
 import 'package:onepref/onepref.dart';
 
 import '../firebase/firebase_functions.dart';
 import 'my_snack.dart';
 
 class BannerHome extends StatefulWidget {
+  void Function() onPressed;
   BannerHome({
     Key? key,
+    required this.onPressed,
     required this.size,
     required this.diamonds,
     required this.points,
@@ -41,49 +43,6 @@ class _BannerHomeState extends State<BannerHome> {
     // _streamSubscription!.dispose();
   }
 
-  void creditUser(PurchaseDetails purchaseDetails) async {
-    for (var product in storeProductIds) {
-      if (product.id == purchaseDetails.productID) {
-        int newDiamond = widget.diamonds + product.reward!;
-        FirebaseFun().uploadPurchaseDiamond(newDiamond);
-      }
-    }
-  }
-
-  List<String> _kIds = <String>['diamond_10', 'diamond_30', 'diamond_60'];
-  List<ProductId> storeProductIds = [
-    ProductId(id: 'diamond_10', isConsumable: true, reward: 10),
-    ProductId(id: 'diamond_30', isConsumable: true, reward: 30),
-    ProductId(id: 'diamond_60', isConsumable: true, reward: 60),
-    //ProductId(id: 'id', isConsumable: true, reward: 10),
-  ];
-
-  //show
-  // showDiamonds() => showModalBottomSheet(
-  //     context: context,
-  //     builder: (context) {
-  //       return Container(
-  //           height: MediaQuery.of(context).size.height * 0.25,
-  //           width: MediaQuery.of(context).size.width,
-  //           child:
-
-  //            ListView.builder(
-  //               itemCount: _products.length,
-  //               itemBuilder: (context, index) {
-  //                 return GestureDetector(
-  //                   onTap: () {
-  //                     iApEngine.handlePurchase(_products[index], storeProductIds);
-  //                   },
-  //                   child: ListTile(
-  //                     title: Text('${_products[index].description}💎',
-  //                         style: TextStyle(color: Colors.black)),
-  //                     trailing: Text(_products[index].price,
-  //                         style: TextStyle(color: Colors.black)),
-  //                   ),
-  //                 );
-  //               }),
-  //           );
-  //     });
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -139,14 +98,9 @@ class _BannerHomeState extends State<BannerHome> {
                 const SizedBox(
                   height: 10,
                 ),
-                widget.diamonds < 1
+                widget.diamonds < 2
                     ? ElevatedButton(
-                        onPressed: () {
-                          // showDiamonds();
-
-                          MySnack(context, "Buying Diamonds Coming soon",
-                              Colors.green);
-                        },
+                        onPressed: widget.onPressed,
                         child: const Text('Buy Diamonds'))
                     : Text(
                         '💎${widget.diamonds}',

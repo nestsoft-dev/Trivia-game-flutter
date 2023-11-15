@@ -73,6 +73,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.2"
+  bitlabs_plugin:
+    dependency: "direct main"
+    description:
+      name: bitlabs_plugin
+      sha256: "0c67d3c8d68d72b10225908eb985ad16b726b22f1811546404bebe121241ddbd"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.9.0"
   boolean_selector:
     dependency: transitive
     description:
@@ -390,6 +398,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.16"
+  flutter_pollfish:
+    dependency: "direct main"
+    description:
+      name: flutter_pollfish
+      sha256: b7689cc362a18a90721b6827249188ec9a91984b23c5345c724a27e58651d670
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.2.0"
   flutter_share:
     dependency: "direct main"
     description:

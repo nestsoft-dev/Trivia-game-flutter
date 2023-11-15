@@ -17,10 +17,12 @@ import 'package:trival_game/firebase/firebase_functions.dart';
 import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:unity_ads_plugin/unity_ads_plugin.dart';
+//import 'package:unity_ads_plugin/unity_ads_plugin.dart';
 
 import '../constants/constant.dart';
 import '../model/question_model.dart';
 import '../model/user_model.dart';
+import '../pages/show_sub_list.dart';
 import '../services/admob__ads.dart';
 import '../services/unity_ads.dart';
 import '../widgets/my_shrimmer.dart';
@@ -115,10 +117,21 @@ class _SingleQuizScreenState extends State<SingleQuizScreen> {
       _pageController.animateToPage(_currentPageIndex,
           duration: Duration(milliseconds: 300), curve: Curves.easeIn);
     } else {
-      _interstitialAd!.show();
+      try {
+        _interstitialAd!.show();
+      } catch (e) {}
+
+      UnityAds.showVideoAd(
+        placementId: 'Interstitial_Android',
+        onFailed: (adUnitId, error, message) {},
+        onStart: (adUnitId) {},
+        onClick: (adUnitId) {},
+        onComplete: (reward) {},
+      );
+
 //submit
       int newP = points + _score;
-      int newD = diamonds < 30 ? 1 : 3;
+      int newD = diamonds < 30 ? 0 : 3;
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
@@ -135,38 +148,10 @@ class _SingleQuizScreenState extends State<SingleQuizScreen> {
   Timer? timer;
   int time = 0;
   BannerAd? _bannerAd;
-  bool _isLoaded = false;
-  loadBanner() {
-    _bannerAd = BannerAd(
-      adUnitId: AdmobAds.bannerId,
-      request: const AdRequest(),
-      size: AdSize.banner,
-      listener: BannerAdListener(
-        // Called when an ad is successfully received.
-        onAdLoaded: (ad) {
-          debugPrint('$ad loaded.');
-          setState(() {
-            _isLoaded = true;
-          });
-        },
-        // Called when an ad request failed.
-        onAdFailedToLoad: (ad, err) {
-          debugPrint('BannerAd failed to load: $err');
-          // Dispose the ad here to free resources.
-          ad.dispose();
-        },
-        // Called when an ad opens an overlay that covers the screen.
-        onAdOpened: (Ad ad) {},
-        // Called when an ad removes an overlay that covers the screen.
-        onAdClosed: (Ad ad) {},
-        // Called when an impression occurs on the ad.
-        onAdImpression: (Ad ad) {},
-      ),
-    )..load();
-  }
+  
 
   startTimer() {
-    time = 10;
+    time = 5;
 
     timer = Timer.periodic(Duration(minutes: 1), (_) async {
       if (time! > 0) {
@@ -174,13 +159,20 @@ class _SingleQuizScreenState extends State<SingleQuizScreen> {
           time--;
         });
 
-        if (time! < 5) {
+        if (time! < 2) {
           // final player = AudioPlayer();
           // player.play(AssetSource('jsons/td_tick.mp3'));
           MySnack(context, 'Running low on Time watch ads to increase Time',
               Colors.red);
         }
       } else if (time == 0) {
+          UnityAds.showVideoAd(
+          placementId: 'Rewarded_Android',
+          onFailed: (adUnitId, error, message) {},
+          onStart: (adUnitId) {},
+          onClick: (adUnitId) {},
+          onComplete: (reward){}
+        );
         int newP = points + _score;
         int newD = diamonds < 30 ? 1 : 3;
         Navigator.pushAndRemoveUntil(
@@ -204,89 +196,27 @@ class _SingleQuizScreenState extends State<SingleQuizScreen> {
   void initState() {
     super.initState();
     getQuestions();
-    loadBanner();
-    loadAdInter();
-    loadRewardsAds();
+
     //startTimer();
+    UnityAds.load(
+      placementId: 'Interstitial_Android',
+      onComplete: (adUnitId) {},
+      onFailed: (adUnitId, error, message) => print(
+          'Interstitial_Android Ad Load Failed $adUnitId: $error $message'),
+    );
+    //startTimer();
+    UnityAds.load(
+      placementId: 'Rewarded_Android',
+      onComplete: (adUnitId) {},
+      onFailed: (adUnitId, error, message) =>
+          print('Rewarded Ad Load Failed $adUnitId: $error $message'),
+    );
   }
 
   RewardedAd? _rewardedAd;
-  loadRewardsAds() {
-    RewardedAd.load(
-        adUnitId: AdmobAds.rewarded,
-        request: const AdRequest(),
-        rewardedAdLoadCallback: RewardedAdLoadCallback(
-          // Called when an ad is successfully received.
-          onAdLoaded: (ad) {
-            setState(() {
-              _isRewardedLoaded = true;
-            });
-            ad.fullScreenContentCallback = FullScreenContentCallback(
-                // Called when the ad showed the full screen content.
-                onAdShowedFullScreenContent: (ad) {},
-                // Called when an impression occurs on the ad.
-                onAdImpression: (ad) {},
-                // Called when the ad failed to show full screen content.
-                onAdFailedToShowFullScreenContent: (ad, err) {
-                  // Dispose the ad here to free resources.
-                  ad.dispose();
-                },
-                // Called when the ad dismissed full screen content.
-                onAdDismissedFullScreenContent: (ad) {
-                  // Dispose the ad here to free resources.
-                  ad.dispose();
-                },
-                // Called when a click is recorded for an ad.
-                onAdClicked: (ad) {});
-
-            debugPrint('$ad loaded.');
-            // Keep a reference to the ad so you can show it later.
-            _rewardedAd = ad;
-          },
-          // Called when an ad request failed.
-          onAdFailedToLoad: (LoadAdError error) {
-            debugPrint('RewardedAd failed to load: $error');
-          },
-        ));
-  }
 
   bool _isRewardedLoaded = false;
   InterstitialAd? _interstitialAd;
-  void loadAdInter() {
-    InterstitialAd.load(
-        adUnitId: AdmobAds.inter,
-        request: const AdRequest(),
-        adLoadCallback: InterstitialAdLoadCallback(
-          // Called when an ad is successfully received.
-          onAdLoaded: (ad) {
-            ad.fullScreenContentCallback = FullScreenContentCallback(
-                // Called when the ad showed the full screen content.
-                onAdShowedFullScreenContent: (ad) {},
-                // Called when an impression occurs on the ad.
-                onAdImpression: (ad) {},
-                // Called when the ad failed to show full screen content.
-                onAdFailedToShowFullScreenContent: (ad, err) {
-                  // Dispose the ad here to free resources.
-                  ad.dispose();
-                },
-                // Called when the ad dismissed full screen content.
-                onAdDismissedFullScreenContent: (ad) {
-                  // Dispose the ad here to free resources.
-                  ad.dispose();
-                },
-                // Called when a click is recorded for an ad.
-                onAdClicked: (ad) {});
-
-            debugPrint('$ad loaded.');
-            // Keep a reference to the ad so you can show it later.
-            _interstitialAd = ad;
-          },
-          // Called when an ad request failed.
-          onAdFailedToLoad: (LoadAdError error) {
-            debugPrint('InterstitialAd failed to load: $error');
-          },
-        ));
-  }
 
   // void creditUser(PurchaseDetails purchaseDetails) async {
   //   for (var product in storeProductIds) {
@@ -296,13 +226,6 @@ class _SingleQuizScreenState extends State<SingleQuizScreen> {
   //     }
   //   }
   // }
-
-  List<ProductId> storeProductIds = [
-    ProductId(id: 'diamond_10', isConsumable: true, reward: 10),
-    ProductId(id: 'diamond_30', isConsumable: true, reward: 30),
-    ProductId(id: 'diamond_60', isConsumable: true, reward: 60),
-    //ProductId(id: 'id', isConsumable: true, reward: 10),
-  ];
 
   //show
 
@@ -555,19 +478,38 @@ class _SingleQuizScreenState extends State<SingleQuizScreen> {
             ? FloatingActionButton(
                 onPressed: _isRewardedLoaded
                     ? () {
-                        _rewardedAd!.show(onUserEarnedReward: (adview, reward) {
-                          setState(() {
-                            time += 3;
-                          });
-                        });
+                        UnityAds.showVideoAd(
+                          placementId: 'Interstitial_Android',
+                          onFailed: (adUnitId, error, message) {},
+                          onStart: (adUnitId) {},
+                          onClick: (adUnitId) {},
+                          onComplete: (adUnitId) {
+                            UnityAds.load(
+                              placementId: 'Interstitial_Android',
+                              onComplete: (adUnitId) {},
+                              onFailed: (adUnitId, error, message) => print(
+                                  'Interstitial_Android Ad Load Failed $adUnitId: $error $message'),
+                            );
+                            setState(() {
+                              time += 3;
+                            });
+                          },
+                        );
                       }
                     : () async {
+                        //  MySnack(context, 'No Ads Available', Colors.red);
                         UnityAds.showVideoAd(
                           placementId: 'Rewarded_Android',
                           onFailed: (adUnitId, error, message) {},
                           onStart: (adUnitId) {},
                           onClick: (adUnitId) {},
                           onComplete: (reward) => setState(() {
+                            UnityAds.load(
+                              placementId: 'Rewarded_Android',
+                              onComplete: (adUnitId) {},
+                              onFailed: (adUnitId, error, message) => print(
+                                  'Rewarded Ad Load Failed $adUnitId: $error $message'),
+                            );
                             time += 3;
                           }),
                         );
@@ -591,222 +533,7 @@ class _SingleQuizScreenState extends State<SingleQuizScreen> {
                     diamonds = usermodel.diamonds;
                     points = usermodel.point;
 
-                    // return Padding(
-                    //   padding: const EdgeInsets.symmetric(horizontal: 15),
-                    //   child: ListView(children: [
-                    //     Padding(
-                    //       padding: const EdgeInsets.symmetric(horizontal: 15),
-                    //       child: SizedBox(
-                    //         height: 55,
-                    //         width: size.width,
-                    //         child: Row(
-                    //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //           children: [
-                    //             //points gotten
-                    //             Row(
-                    //               mainAxisAlignment:
-                    //                   MainAxisAlignment.spaceBetween,
-                    //               children: [
-                    //                 Container(
-                    //                   padding: const EdgeInsets.all(10),
-                    //                   decoration: BoxDecoration(
-                    //                       borderRadius:
-                    //                           BorderRadius.circular(12),
-                    //                       color: Colors.yellowAccent
-                    //                           .withOpacity(0.3)),
-                    //                   child: Text(
-                    //                     '$_score points',
-                    //                     textAlign: TextAlign.center,
-                    //                     style: GoogleFonts.poppins(
-                    //                         fontWeight: FontWeight.w500,
-                    //                         fontSize: 18,
-                    //                         color:
-                    //                             Color.fromARGB(255, 35, 0, 82)),
-                    //                   ),
-                    //                 ),
-                    //                 const SizedBox(width: 5),
-                    //                 usermodel.diamonds < 2
-                    //                     ? ElevatedButton(
-                    //                         onPressed: () {
-                    //                           MySnack(
-                    //                               context,
-                    //                               'Buying of Diamonds coming soon',
-                    //                               Colors.deepPurple);
-                    //                         },
-                    //                         child: const Text('Buy Diamonds'))
-                    //                     : GestureDetector(
-                    //                         onTap: usermodel.diamonds < 2
-                    //                             ? () => MySnack(
-                    //                                 context,
-                    //                                 'Low on Diamonds',
-                    //                                 Colors.deepPurple)
-                    //                             : () {
-                    //                                 showHint(diamonds);
-                    //                                 setState(() {
-                    //                                   answer = questions[
-                    //                                           questionIndex]
-                    //                                       ['answer'];
-                    //                                 });
-                    //                               },
-                    //                         child: Container(
-                    //                           padding: const EdgeInsets.all(10),
-                    //                           decoration: BoxDecoration(
-                    //                               borderRadius:
-                    //                                   BorderRadius.circular(12),
-                    //                               color: Color(0xFFE040FB)
-                    //                                   .withOpacity(0.3)),
-                    //                           child: Text(
-                    //                             '🔔Hint💎-2',
-                    //                             textAlign: TextAlign.center,
-                    //                             style: GoogleFonts.poppins(
-                    //                                 fontWeight: FontWeight.w500,
-                    //                                 fontSize: 18,
-                    //                                 color: Color.fromARGB(
-                    //                                     255, 35, 0, 82)),
-                    //                           ),
-                    //                         ),
-                    //                       ),
-                    //               ],
-                    //             ),
-
-                    //             Container(
-                    //               padding: const EdgeInsets.all(10),
-                    //               decoration: BoxDecoration(
-                    //                   borderRadius: BorderRadius.circular(12),
-                    //                   color:
-                    //                       Colors.yellowAccent.withOpacity(0.3)),
-                    //               child: Text(
-                    //                 '$time ⏰',
-                    //                 textAlign: TextAlign.center,
-                    //                 style: GoogleFonts.poppins(
-                    //                     fontWeight: FontWeight.w500,
-                    //                     fontSize: 18,
-                    //                     color: Color.fromARGB(255, 35, 0, 82)),
-                    //               ),
-                    //             ),
-                    //           ],
-                    //         ),
-                    //       ),
-                    //     ),
-                    //     Container(
-                    //       height: size.height * 0.65,
-                    //       child: CardSwiper(
-                    //           controller: controller,
-                    //           isLoop: false,
-                    //           onEnd: () {
-                    //             MyAds().showInter();
-
-                    //             controller.dispose();
-                    //             int newP = points + _score;
-                    //             int newD = diamonds < 30 ? 1 : 3;
-                    //             Navigator.pushAndRemoveUntil(
-                    //                 context,
-                    //                 MaterialPageRoute(
-                    //                     builder: (context) => RewardsScreen(
-                    //                           points: newP,
-                    //                           diamonds: newD,
-                    //                           defPoint: _score,
-                    //                           defDiamond: newD,
-                    //                         )),
-                    //                 (route) => false);
-                    //           },
-                    //           initialIndex: 0,
-                    //           cardsCount: questions.length != null
-                    //               ? questions.length
-                    //               : 5,
-                    //           onSwipe: _onSwipe,
-                    //           onUndo: _onUndo,
-                    //           numberOfCardsDisplayed: 3,
-                    //           backCardOffset: const Offset(40, 40),
-                    //           padding: const EdgeInsets.all(24.0),
-                    //           cardBuilder: (
-                    //             context,
-                    //             index,
-                    //             horizontalThresholdPercentage,
-                    //             verticalThresholdPercentage,
-                    //           ) {
-                    //             Map<String, dynamic> question =
-                    //                 questions[index];
-
-                    //             return Card(
-                    //               margin: EdgeInsets.all(16),
-                    //               child: Padding(
-                    //                 padding: const EdgeInsets.all(16.0),
-                    //                 child: Column(
-                    //                   crossAxisAlignment:
-                    //                       CrossAxisAlignment.start,
-                    //                   children: [
-                    //                     Text(question['question']),
-                    //                     SizedBox(height: 16),
-                    //                     ...question['option']
-                    //                         .entries
-                    //                         .map((entry) {
-                    //                       final optionKey = entry.key;
-                    //                       final optionValue = entry.value;
-                    //                       return ListTile(
-                    //                         title: Text(optionValue),
-                    //                         leading: Radio(
-                    //                             value: optionKey,
-                    //                             groupValue:
-                    //                                 selectedOption, // question['answer'],
-                    //                             onChanged: (value) {
-                    //                               setState(() {
-                    //                                 selectedOption =
-                    //                                     value as String;
-                    //                               });
-                    //                             }),
-                    //                       );
-                    //                     }).toList(),
-                    //                   ],
-                    //                 ),
-                    //               ),
-                    //             );
-                    //             // return QuizCard(
-                    //             //   question: question,
-                    //             //   currentIndex: index,
-                    //             // );
-                    //           }),
-                    //     ),
-                    //     const SizedBox(
-                    //       height: 25,
-                    //     ),
-
-                    //     Padding(
-                    //       padding: const EdgeInsets.all(8.0),
-                    //       child: Text(
-                    //         '$answer',
-                    //         style: const TextStyle(
-                    //             color: Colors.white, fontSize: 18),
-                    //       ),
-                    //     ),
-                    //     //show progress of the question
-                    // Padding(
-                    //   padding: EdgeInsets.symmetric(horizontal: 25),
-                    //   child: Flexible(
-                    //     child: LinearPercentIndicator(
-                    //       width: MediaQuery.of(context).size.width * 0.75,
-                    //       animation: true,
-                    //       animateFromLastPercent: true,
-                    //       lineHeight: 25.0,
-                    //       animationDuration: 2500,
-                    //       percent: percentValue,
-                    //       barRadius: Radius.circular(30),
-                    //       center: Text(
-                    //         "${percentValue * 100}%",
-                    //         style: GoogleFonts.mochiyPopOne(
-                    //             fontSize: 18, color: Colors.white),
-                    //       ),
-                    //       linearStrokeCap: LinearStrokeCap.roundAll,
-                    //       progressColor: percentValue < 0.5
-                    //           ? Colors.yellow
-                    //           : percentValue > 0.8
-                    //               ? defaultButton
-                    //               : Colors.green,
-                    //     ),
-                    //   ),
-                    // ),
-                    //   ]),
-                    // );
+               
                     return Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 25, vertical: 30),
@@ -824,9 +551,7 @@ class _SingleQuizScreenState extends State<SingleQuizScreen> {
                             double valueP = index / questions.length * 100;
                             return ListView(
                               children: [
-                                // const SizedBox(
-                                //   height: 20,
-                                // ),
+                           
                                 SizedBox(
                                   height: 55,
                                   width: size.width,
@@ -834,7 +559,7 @@ class _SingleQuizScreenState extends State<SingleQuizScreen> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      //points gotten
+                                     
                                       Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
@@ -860,10 +585,11 @@ class _SingleQuizScreenState extends State<SingleQuizScreen> {
                                           usermodel.diamonds < 2
                                               ? ElevatedButton(
                                                   onPressed: () {
-                                                    MySnack(
+                                                    Navigator.push(
                                                         context,
-                                                        'Buying of Diamonds coming soon',
-                                                        Colors.deepPurple);
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                ShowSubist()));
                                                   },
                                                   child: const Text(
                                                       'Buy Diamonds'))
@@ -1095,6 +821,18 @@ class _SingleQuizScreenState extends State<SingleQuizScreen> {
                                     ).toList(),
                                   ),
                                 ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: UnityBannerAd(
+                                    placementId: 'Banner_Android',
+                                    onLoad: (adUnitId) =>
+                                        print('Banner loaded: $adUnitId'),
+                                    onClick: (adUnitId) =>
+                                        print('Banner clicked: $adUnitId'),
+                                    onFailed: (adUnitId, error, message) => print(
+                                        'Banner Ad $adUnitId failed: $error $message'),
+                                  ),
+                                ),
                                 const SizedBox(
                                   height: 25,
                                 ),
@@ -1125,23 +863,23 @@ class _SingleQuizScreenState extends State<SingleQuizScreen> {
                                   ),
                                 ),
 
-                                _isLoaded
-                                    ? SizedBox(
-                                        width: _bannerAd!.size.width.toDouble(),
-                                        height:
-                                            _bannerAd!.size.height.toDouble(),
-                                        child: AdWidget(ad: _bannerAd!),
-                                      )
-                                    : UnityBannerAd(
-                                        placementId: 'Banner_Android',
-                                        onLoad: (adUnitId) =>
-                                            print('Banner loaded: $adUnitId'),
-                                        onClick: (adUnitId) =>
-                                            print('Banner clicked: $adUnitId'),
-                                        onFailed: (adUnitId, error, message) =>
-                                            print(
-                                                'Banner Ad $adUnitId failed: $error $message'),
-                                      ),
+                                // _isLoaded
+                                //     ? SizedBox(
+                                //         width: _bannerAd!.size.width.toDouble(),
+                                //         height:
+                                //             _bannerAd!.size.height.toDouble(),
+                                //         child: AdWidget(ad: _bannerAd!),
+                                //       )
+                                //     : UnityBannerAd(
+                                //         placementId: 'Banner_Android',
+                                //         onLoad: (adUnitId) =>
+                                //             print('Banner loaded: $adUnitId'),
+                                //         onClick: (adUnitId) =>
+                                //             print('Banner clicked: $adUnitId'),
+                                //         onFailed: (adUnitId, error, message) =>
+                                //             print(
+                                //                 'Banner Ad $adUnitId failed: $error $message'),
+                                //       ),
                                 const SizedBox(
                                   height: 15,
                                 ),

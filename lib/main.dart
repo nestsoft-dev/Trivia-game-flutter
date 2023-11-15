@@ -13,7 +13,8 @@ import 'services/unity_ads.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
- await MobileAds.instance.initialize();
+  await MobileAds.instance.initialize();
+  setupTestAds();
   await Firebase.initializeApp(
       //options: DefaultFirebaseOptions{},
       );
@@ -35,6 +36,14 @@ void main() async {
 
   runApp(ChangeNotifierProvider(
       create: (context) => FirebaseFun(), child: const MyApp()));
+}
+
+void setupTestAds() {
+  RequestConfiguration requestConfiguration = RequestConfiguration(
+    testDeviceIds: ['1DB973C1BF1CDA26F3EF22215E0ADCE1'],
+  );
+
+  MobileAds.instance.updateRequestConfiguration(requestConfiguration);
 }
 
 requestPermissions() async {

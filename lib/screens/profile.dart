@@ -10,6 +10,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:trival_game/model/user_model.dart';
 import 'package:unity_ads_plugin/unity_ads_plugin.dart';
+//import 'package:unity_ads_plugin/unity_ads_plugin.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../constants/constant.dart';
 import '../firebase/firebase_functions.dart';
@@ -111,7 +112,7 @@ class _ProfileState extends State<Profile> {
   bool _isLoaded = false;
   loadBanner() {
     _bannerAd = BannerAd(
-      adUnitId: AdmobAds.bannerId,
+      adUnitId: 'ca-app-pub-6987059332386190/2817158072',
       request: const AdRequest(),
       size: AdSize.banner,
       listener: BannerAdListener(
@@ -128,12 +129,6 @@ class _ProfileState extends State<Profile> {
           // Dispose the ad here to free resources.
           ad.dispose();
         },
-        // Called when an ad opens an overlay that covers the screen.
-        onAdOpened: (Ad ad) {},
-        // Called when an ad removes an overlay that covers the screen.
-        onAdClosed: (Ad ad) {},
-        // Called when an impression occurs on the ad.
-        onAdImpression: (Ad ad) {},
       ),
     )..load();
   }
@@ -331,13 +326,14 @@ class _ProfileState extends State<Profile> {
                     SizedBox(
                       height: size.height * 0.02,
                     ),
-                     _isLoaded
+                    _isLoaded
                         ? SizedBox(
                             width: _bannerAd!.size.width.toDouble(),
                             height: _bannerAd!.size.height.toDouble(),
                             child: AdWidget(ad: _bannerAd!),
                           )
-                        : UnityBannerAd(
+                        : //SizedBox.shrink(),
+                         UnityBannerAd(
                             placementId: 'Banner_Android',
                             onLoad: (adUnitId) =>
                                 print('Banner loaded: $adUnitId'),

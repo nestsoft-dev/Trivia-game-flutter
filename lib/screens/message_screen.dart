@@ -71,7 +71,7 @@ class _MessageScreenState extends State<MessageScreen> {
   RewardedAd? _rewardedAd;
   loadRewardsAds() {
     RewardedAd.load(
-        adUnitId: AdmobAds.rewarded,
+        adUnitId: 'ca-app-pub-6987059332386190/1312504711',
         request: const AdRequest(),
         rewardedAdLoadCallback: RewardedAdLoadCallback(
           // Called when an ad is successfully received.
@@ -171,7 +171,8 @@ class _MessageScreenState extends State<MessageScreen> {
                             ? () {
                                 _isRewardedLoaded
                                     ? showAds()
-                                    : UnityAds.showVideoAd(
+                                    :// MySnack(context, 'No ads available', Colors.red)
+                                     UnityAds.showVideoAd(
                                         placementId: 'Rewarded_Android',
                                         onFailed: (adUnitId, error, message) {},
                                         onStart: (adUnitId) {},
@@ -185,18 +186,9 @@ class _MessageScreenState extends State<MessageScreen> {
                             : () {
                                 _sendMessage(messageController.text);
                               },
-                        child: Stack(
-                          children: [
-                            Icon(
-                             click < 0? FontAwesomeIcons.video :Icons.send,
-                              color: defaultButton,
-                            ),
-                            Center(
-                                child: Text(
-                              click.toString(),
-                              style: const TextStyle(color: Colors.white),
-                            ))
-                          ],
+                        child: Icon(
+                          click < 0 ? FontAwesomeIcons.video : Icons.send,
+                          color: defaultButton,
                         ),
                       ),
                     ),
